@@ -11,7 +11,7 @@
 - [x] 7. Verificar tablas, relaciones, enums y triggers
 - [x] 8. Crear repositorio Git / GitHub
 - [x] 9. Crear estructura del proyecto
-- [ ] 10. Crear backend con Django
+- [x] 10. Crear backend con Django
 - [ ] 11. Conectar backend con PostgreSQL
 - [ ] 12. Crear modelos Django segun la base
 - [ ] 13. Crear autenticacion con JWT
