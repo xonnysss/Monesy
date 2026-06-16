@@ -1,0 +1,365 @@
+EXPLICACION SENCILLA DE LA BASE DE DATOS MONESYDB
+
+Esta base de datos sirve para guardar y organizar toda la informacion principal del sistema Monesy.
+Su objetivo es ayudar a un minimarket a controlar productos, ventas, compras, clientes, proveedores, usuarios y movimientos de stock.
+
+
+1. IDEA GENERAL
+
+La base de datos esta dividida en varias tablas porque cada tabla guarda un tipo de informacion diferente.
+Eso permite que el sistema sea mas ordenado, mas facil de mantener y mas confiable.
+
+Por ejemplo:
+- una tabla guarda productos
+- otra guarda ventas
+- otra guarda compras
+- otra guarda clientes
+- otra guarda proveedores
+- otra guarda usuarios
+- otra guarda el historial del stock
+
+Todas estas tablas se conectan entre si porque en la vida real esas cosas tambien se relacionan.
+
+
+2. QUE HACE CADA TABLA
+
+app_user
+Esta tabla guarda los usuarios del sistema.
+Por ejemplo: el cajero, el administrador o la persona que registra una compra.
+
+Se conecta con:
+- venta, porque cada venta debe saber que usuario la registro
+- compra, porque cada compra debe saber que usuario la registro
+- movimiento_stock, porque cada cambio en el stock debe tener un responsable
+- app_user_rol, porque cada usuario puede tener uno o varios roles
+
+
+rol
+Esta tabla guarda los tipos de permiso del sistema.
+Por ejemplo:
+- ADMIN
+- CAJERO
+- SUPERVISOR
+
+Se conecta con:
+- app_user_rol, porque un rol puede asignarse a varios usuarios
+
+
+app_user_rol
+Esta tabla conecta usuarios con roles.
+Sirve para saber que permisos tiene cada usuario.
+
+Por ejemplo:
+- un usuario puede ser CAJERO
+- otro puede ser ADMIN
+- otro puede ser SUPERVISOR
+
+Se conecta con:
+- app_user, porque necesita saber a que usuario pertenece el rol
+- rol, porque necesita saber que rol se asigno
+
+
+proveedor
+Esta tabla guarda la informacion de las personas o empresas que venden productos al minimarket.
+
+Se conecta con:
+- compra, porque toda compra debe venir de un proveedor
+
+
+cliente
+Esta tabla guarda la informacion de los clientes cuando se necesita registrar una venta a nombre de alguien.
+
+Se conecta con:
+- venta, porque una venta puede estar asociada a un cliente
+
+Nota:
+El cliente en venta es opcional, porque en un minimarket muchas veces solo se vende sin registrar al cliente.
+
+
+categoria
+Esta tabla guarda los tipos o grupos de productos.
+Ejemplo: bebidas, snacks, limpieza, lacteos, utiles escolares.
+
+Se conecta con:
+- producto, porque cada producto pertenece a una categoria
+
+
+unidad_medida
+Esta tabla guarda la forma en que se mide un producto.
+Ejemplo:
+- unidad
+- kilogramo
+- litro
+- caja
+
+Se conecta con:
+- producto, porque cada producto debe indicar en que unidad se controla su stock
+
+Esto evita tratar igual productos que se venden por unidad y productos que se venden por peso o volumen.
+
+
+producto
+Esta tabla guarda la informacion principal de cada producto.
+Por ejemplo:
+- codigo
+- nombre
+- unidad de medida
+- precio de venta
+- precio de compra referencial
+- stock actual
+- stock minimo
+- estado activo o inactivo
+
+Se conecta con:
+- categoria, porque cada producto pertenece a una categoria
+- unidad_medida, porque cada producto tiene una forma de medicion
+- detalle_venta, porque un producto puede venderse muchas veces
+- detalle_compra, porque un producto puede comprarse muchas veces
+- movimiento_stock, porque cada cambio en el stock afecta a un producto
+- historial_precio, porque un producto puede cambiar de precio con el tiempo
+
+
+venta
+Esta tabla guarda la cabecera de cada venta.
+Aqui se registra la informacion general de la operacion:
+- quien vendio
+- a que cliente, si existe
+- fecha
+- metodo de pago
+- total
+- monto recibido
+- cambio
+
+Se conecta con:
+- cliente, porque una venta puede pertenecer a un cliente
+- app_user, porque un usuario registra la venta
+- turno_caja, porque una venta puede pertenecer a un turno de caja
+- detalle_venta, porque una venta puede tener varios productos
+
+
+detalle_venta
+Esta tabla guarda los productos concretos que se vendieron en una venta.
+No guarda la venta completa, sino el detalle de cada producto dentro de esa venta.
+
+Por ejemplo, si en una venta se compraron:
+- 2 gaseosas
+- 1 pan
+- 1 chocolate
+
+entonces la tabla venta guarda la venta general y detalle_venta guarda esas lineas una por una.
+
+Se conecta con:
+- venta, porque cada detalle pertenece a una venta
+- producto, porque cada detalle representa un producto vendido
+
+Guarda:
+- cantidad
+- precio_unitario
+- descuento_unitario
+- subtotal
+
+Esto es importante porque permite conservar el precio exacto usado en ese momento, aunque despues el precio del producto cambie.
+El descuento unitario permite saber si en una venta se rebajo el precio de un producto.
+
+
+devolucion
+Esta tabla guarda las devoluciones realizadas sobre una venta.
+Sirve para saber que venta fue devuelta, quien registro la devolucion, la fecha, el motivo y el total devuelto.
+
+Se conecta con:
+- venta, porque toda devolucion debe relacionarse con una venta original
+- app_user, porque un usuario registra la devolucion
+- detalle_devolucion, porque una devolucion puede incluir varios productos
+
+
+detalle_devolucion
+Esta tabla guarda los productos concretos que fueron devueltos.
+
+Se conecta con:
+- devolucion, porque cada detalle pertenece a una devolucion
+- producto, porque cada detalle representa un producto devuelto
+
+Guarda:
+- cantidad
+- precio_unitario
+- subtotal
+
+Esto permite generar reportes de devoluciones y auditar cuanto dinero se reintegro.
+
+
+compra
+Esta tabla guarda la cabecera de cada compra del minimarket a sus proveedores.
+Aqui se registra:
+- proveedor
+- usuario que hizo el registro
+- fecha
+- total
+
+Se conecta con:
+- proveedor, porque cada compra viene de un proveedor
+- app_user, porque un usuario registra la compra
+- detalle_compra, porque una compra puede incluir varios productos
+
+
+detalle_compra
+Esta tabla guarda los productos concretos que entraron en una compra.
+
+Se conecta con:
+- compra, porque cada detalle pertenece a una compra
+- producto, porque cada detalle representa un producto comprado
+
+Guarda:
+- cantidad
+- precio_unitario
+- subtotal
+
+Esto permite saber a cuanto se compro cada producto en una fecha especifica.
+
+
+movimiento_stock
+Esta es una de las tablas mas importantes.
+Guarda el historial completo de cambios en el inventario.
+
+Cada vez que el stock sube o baja, se registra un movimiento aqui.
+
+Ejemplos:
+- una venta baja el stock
+- una compra sube el stock
+- un ajuste manual cambia el stock
+- una devolucion puede subir o bajar stock, segun el caso
+- una anulacion puede revertir un movimiento anterior
+
+Se conecta con:
+- producto, porque el movimiento afecta a un producto
+- app_user, porque un usuario realiza o registra el movimiento
+
+Tambien guarda:
+- tipo de movimiento
+- cantidad
+- stock anterior
+- stock nuevo
+- fecha
+- referencia_tipo
+- referencia_id
+- observacion
+
+Eso permite responder preguntas como:
+- quien modifico el stock
+- cuando se modifico
+- por que se modifico
+- de cuanto a cuanto cambio
+
+
+turno_caja
+Esta tabla guarda la apertura y cierre de caja.
+Sirve para saber cuanto dinero habia al iniciar el turno, cuanto deberia haber al cerrar y cuanto se conto realmente.
+
+Se conecta con:
+- app_user, porque un usuario abre o maneja el turno
+- venta, porque las ventas pueden pertenecer a un turno de caja
+
+Esto permite detectar diferencias de caja y saber quien estaba a cargo en ese momento.
+
+
+historial_precio
+Esta tabla guarda los cambios de precio de un producto.
+
+Se conecta con:
+- producto, porque el cambio corresponde a un producto especifico
+- app_user, porque un usuario realizo el cambio
+
+Guarda:
+- precio_anterior
+- precio_nuevo
+- tipo de precio, venta o compra
+- fecha del cambio
+
+Esto permite auditar cambios de precio y analizar como variaron los precios con el tiempo.
+
+
+3. POR QUE LAS TABLAS ESTAN CONECTADAS
+
+Las tablas estan conectadas para que la informacion tenga sentido y no quede suelta.
+
+Ejemplo 1:
+Una venta sola no basta.
+Tambien necesitas saber:
+- quien la registro
+- si tenia cliente
+- que productos contenia
+
+Por eso venta se conecta con app_user, cliente y detalle_venta.
+
+Ejemplo 2:
+Una compra sola tampoco basta.
+Tambien necesitas saber:
+- a que proveedor se compro
+- que usuario la registro
+- que productos entraron
+
+Por eso compra se conecta con proveedor, app_user y detalle_compra.
+
+Ejemplo 3:
+El stock no debe cambiar "por magia".
+Cada cambio debe quedar explicado.
+
+Por eso movimiento_stock se conecta con producto y usuario, y ademas guarda el tipo y la referencia del cambio.
+
+
+4. DIFERENCIA ENTRE VENTA Y DETALLE_VENTA
+
+venta:
+Guarda la informacion general de la operacion.
+
+detalle_venta:
+Guarda las lineas internas de esa venta.
+
+Es decir:
+venta = la factura o ticket general
+detalle_venta = los productos que estan dentro del ticket
+
+Lo mismo pasa con:
+- compra
+- detalle_compra
+
+
+5. POR QUE EXISTE MOVIMIENTO_STOCK SI YA EXISTE stock_actual EN PRODUCTO
+
+producto.stock_actual guarda el valor actual rapido para consultar.
+
+movimiento_stock guarda el historial de como llego a ese valor.
+
+En otras palabras:
+- stock_actual te dice cuanto hay ahora
+- movimiento_stock te dice por que llegaste a ese numero
+
+Las dos cosas son utiles.
+
+
+6. RESUMEN FINAL
+
+La base de datos Monesydb permite:
+- registrar productos
+- organizar categorias
+- manejar unidades de medida
+- guardar proveedores
+- guardar clientes
+- registrar ventas
+- registrar compras
+- registrar devoluciones
+- controlar turnos de caja
+- guardar detalle de productos vendidos y comprados
+- controlar usuarios del sistema
+- manejar roles y permisos
+- llevar historial completo del stock
+- guardar historial de precios
+
+La estructura esta pensada para que el sistema sea ordenado, escalable y facil de consultar despues.
+
+Si mas adelante el proyecto crece, esta base ya tiene una buena base para agregar:
+- reportes
+- dashboard
+- alertas de stock minimo
+- devoluciones
+- auditoria de usuarios
+- historial de precios
