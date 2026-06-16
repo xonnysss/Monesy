@@ -9,8 +9,8 @@
 - [x] 5. Crear DER
 - [x] 6. Crear base de datos Monesydb
 - [x] 7. Verificar tablas, relaciones, enums y triggers
-- [ ] 8. Crear repositorio Git / GitHub
-- [ ] 9. Crear estructura del proyecto
+- [x] 8. Crear repositorio Git / GitHub
+- [x] 9. Crear estructura del proyecto
 - [ ] 10. Crear backend con Django
 - [ ] 11. Conectar backend con PostgreSQL
 - [ ] 12. Crear modelos Django segun la base
@@ -79,6 +79,6 @@
 
 - [x] Repositorio Git local inicializado
 - [x] Archivo .gitignore creado
-- [ ] Repositorio GitHub creado
-- [ ] Remoto origin configurado
-- [ ] Primer commit subido a GitHub
+- [x] Repositorio GitHub creado
+- [x] Remoto origin configurado
+- [x] Primer commit subido a GitHub
