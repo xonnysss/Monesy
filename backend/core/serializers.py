@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from .models import AppUser, AppUserRol, Categoria, Rol, UnidadMedida
+from .models import AppUser, AppUserRol, Categoria, Producto, Rol, UnidadMedida
 
 class RolSerializer(serializers.ModelSerializer):
     class Meta:
@@ -58,3 +58,28 @@ class AppUserSerializer(serializers.ModelSerializer):
             instance.password_hash = make_password(password)
 
         return super().update(instance, validated_data)
+    
+class ProductoSerializer(serializers.ModelSerializer):
+    categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True)
+    unidad_medida_nombre = serializers.CharField(source='unidad_medida.nombre', read_only=True)
+    unidad_medida_simbolo = serializers.CharField(source='unidad_medida.simbolo', read_only=True)
+    
+    class Meta:
+        model = Producto
+        fields = [
+            'id',
+            'codigo',
+            'nombre',
+            'categoria',
+            'categoria_nombre',
+            'unidad_medida',
+            'unidad_medida_nombre',
+            'unidad_medida_simbolo',
+            'precio_venta',
+            'precio_compra_ref',
+            'stock_actual',
+            'stock_minimo',
+            'activo',
+            'created_at',
+        ]
+        read_only_fields = ['id', 'created_at']
