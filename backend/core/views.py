@@ -1,8 +1,14 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
-from .models import AppUser, AppUserRol, Rol
-from .serializers import AppUserRolSerializer, AppUserSerializer, RolSerializer
+from .models import AppUser, AppUserRol, Categoria, Rol, UnidadMedida
+from .serializers import (
+    AppUserRolSerializer,
+    AppUserSerializer,
+    CategoriaSerializer,
+    RolSerializer,
+    UnidadMedidaSerializer,
+)
 
 
 class RolViewSet(viewsets.ModelViewSet):
@@ -31,3 +37,39 @@ class AppUserViewSet(viewsets.ModelViewSet):
 class AppUserRolViewSet(viewsets.ModelViewSet):
     queryset = AppUserRol.objects.select_related('user', 'rol').all()
     serializer_class = AppUserRolSerializer
+
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Categoria.objects.all().order_by('id')
+    serializer_class = CategoriaSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        categoria = self.get_object()
+
+        if categoria.producto_set.exists():
+            return Response(
+                {
+                    'detail': 'No se puede eliminar esta categoria porque tiene productos asignados.'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return super().destroy(request, *args, **kwargs)
+
+
+class UnidadMedidaViewSet(viewsets.ModelViewSet):
+    queryset = UnidadMedida.objects.all().order_by('id')
+    serializer_class = UnidadMedidaSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        unidad_medida = self.get_object()
+
+        if unidad_medida.producto_set.exists():
+            return Response(
+                {
+                    'detail': 'No se puede eliminar esta unidad de medida porque tiene productos asignados.'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return super().destroy(request, *args, **kwargs)

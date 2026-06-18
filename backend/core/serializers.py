@@ -1,12 +1,26 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from .models import AppUser, AppUserRol, Rol
+from .models import AppUser, AppUserRol, Categoria, Rol, UnidadMedida
 
 class RolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rol
         fields = ['id', 'nombre']
+
+
+class UnidadMedidaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UnidadMedida
+        fields = ['id', 'nombre', 'simbolo']
+
+
+class CategoriaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categoria
+        fields = ['id', 'nombre', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
 
 class AppUserRolSerializer(serializers.ModelSerializer):
     rol_nombre = serializers.CharField(source='rol.nombre', read_only=True)
