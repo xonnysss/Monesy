@@ -12,9 +12,9 @@
 - [x] 8. Crear repositorio Git / GitHub
 - [x] 9. Crear estructura del proyecto
 - [x] 10. Crear backend con Django
-- [ ] 11. Conectar backend con PostgreSQL
-- [ ] 12. Crear modelos Django segun la base
-- [ ] 13. Crear autenticacion con JWT
+- [x] 11. Conectar backend con PostgreSQL
+- [x] 12. Crear modelos Django segun la base
+- [x] 13. Crear autenticacion con JWT
 - [ ] 14. Crear API de usuarios y roles
 - [ ] 15. Crear API de categorias y unidades de medida
 - [ ] 16. Crear API de productos
