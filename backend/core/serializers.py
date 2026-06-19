@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from .models import AppUser, AppUserRol, Categoria, Producto, Proveedor, Rol, UnidadMedida
+from .models import AppUser, AppUserRol, Categoria, Cliente, Producto, Proveedor, Rol, UnidadMedida
 
 class RolSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,6 +19,19 @@ class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categoria
         fields = ['id', 'nombre', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+
+class ClienteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cliente
+        fields = [
+            'id', 
+            'documento',
+            'nombre', 
+            'telefono',
+            'created_at',
+        ]
         read_only_fields = ['id', 'created_at']
 
 

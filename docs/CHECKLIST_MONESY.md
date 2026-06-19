@@ -18,7 +18,7 @@
 - [x] 14. Crear API de usuarios y roles
 - [x] 15. Crear API de categorias y unidades de medida
 - [x] 16. Crear API de productos
-- [ ] 17. Crear API de proveedores
+- [x] 17. Crear API de proveedores
 - [ ] 18. Crear API de clientes
 - [ ] 19. Crear API de compras
 - [ ] 20. Crear API de ventas
