@@ -6,6 +6,8 @@ from .views import (
     AppUserViewSet,
     CategoriaViewSet,
     ClienteViewSet,
+    CompraViewSet,
+    DetalleCompraViewSet,
     ProductoViewSet,
     ProveedorViewSet,
     RolViewSet,
@@ -19,7 +21,9 @@ router.register(r'usuarios-roles', AppUserRolViewSet, basename='usuarios-roles')
 router.register(r'productos', ProductoViewSet, basename='productos')
 router.register(r'proveedores', ProveedorViewSet, basename='proveedores')
 router.register(r'categorias', CategoriaViewSet, basename='categorias')
-router.register(r'Clientes', ClienteViewSet, basename='clientes')
+router.register(r'clientes', ClienteViewSet, basename='clientes')
+router.register(r'compras', CompraViewSet, basename='compras')
+router.register(r'detalles-compra', DetalleCompraViewSet, basename='detalles-compra')
 router.register(r'unidades-medida', UnidadMedidaViewSet, basename='unidades-medida')
 
 urlpatterns = [

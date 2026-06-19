@@ -1,10 +1,5 @@
 -- Monesydb - Schema only
 -- Run this file while connected to the existing database: Monesydb
-
--- =========================
--- ENUMS
--- =========================
-
 CREATE TYPE payment_method_enum AS ENUM (
     'EFECTIVO',
     'QR',
@@ -29,9 +24,7 @@ CREATE TYPE stock_reference_type_enum AS ENUM (
     'ANULACION'
 );
 
--- =========================
 -- TABLES
--- =========================
 
 CREATE TABLE rol (
     id              SMALLSERIAL PRIMARY KEY,
@@ -196,9 +189,9 @@ CREATE TABLE movimiento_stock (
     observacion         TEXT
 );
 
--- =========================
+
 -- INDEXES
--- =========================
+
 
 CREATE INDEX idx_producto_categoria_id ON producto(categoria_id);
 CREATE INDEX idx_producto_unidad_medida_id ON producto(unidad_medida_id);
@@ -240,9 +233,9 @@ CREATE INDEX idx_historial_precio_producto_id ON historial_precio(producto_id);
 CREATE INDEX idx_historial_precio_usuario_id ON historial_precio(usuario_id);
 CREATE INDEX idx_historial_precio_cambiado_en ON historial_precio(cambiado_en);
 
--- =========================
+
 -- TRIGGERS / FUNCTIONS
--- =========================
+
 
 CREATE OR REPLACE FUNCTION validate_subtotal_detalle_venta()
 RETURNS TRIGGER AS $$
@@ -338,9 +331,8 @@ AFTER INSERT OR UPDATE ON movimiento_stock
 FOR EACH ROW
 EXECUTE FUNCTION sync_producto_stock_actual();
 
--- =========================
+
 -- INITIAL CATALOG DATA
--- =========================
 
 INSERT INTO rol (nombre)
 VALUES ('ADMIN'), ('CAJERO'), ('SUPERVISOR')
