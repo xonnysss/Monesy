@@ -8,10 +8,12 @@ Categoria,
 Cliente, 
 Compra,
 DetalleCompra,
+DetalleVenta,
 Producto, 
 Proveedor, 
 Rol, 
 UnidadMedida,
+Venta,
 )
 from .serializers import (
     AppUserRolSerializer,
@@ -20,10 +22,12 @@ from .serializers import (
     ClienteSerializer,
     CompraSerializer,
     DetalleCompraSerializer,
+    DetalleVentaSerializer,
     ProductoSerializer,
     ProveedorSerializer,
     RolSerializer,
     UnidadMedidaSerializer,
+    VentaSerializer,
 )
 
 
@@ -83,9 +87,19 @@ class CompraViewSet(viewsets.ModelViewSet):
     serializer_class = CompraSerializer
 
 
+class VentaViewSet(viewsets.ModelViewSet):
+    queryset = Venta.objects.select_related('cliente', 'cajero', 'turno').all().order_by('id')
+    serializer_class = VentaSerializer
+
+
 class DetalleCompraViewSet(viewsets.ModelViewSet):
     queryset = DetalleCompra.objects.select_related('compra', 'producto',).all().order_by('id')
     serializer_class = DetalleCompraSerializer
+
+class DetalleVentaViewSet(viewsets.ModelViewSet):
+    queryset = DetalleVenta.objects.select_related('venta', 'producto',).all().order_by('id')
+    serializer_class = DetalleVentaSerializer
+
 
 class UnidadMedidaViewSet(viewsets.ModelViewSet):
     queryset = UnidadMedida.objects.all().order_by('id')

@@ -8,10 +8,12 @@ from .views import (
     ClienteViewSet,
     CompraViewSet,
     DetalleCompraViewSet,
+    DetalleVentaViewSet,
     ProductoViewSet,
     ProveedorViewSet,
     RolViewSet,
     UnidadMedidaViewSet,
+    VentaViewSet,
 )
 
 router = DefaultRouter()
@@ -24,7 +26,9 @@ router.register(r'categorias', CategoriaViewSet, basename='categorias')
 router.register(r'clientes', ClienteViewSet, basename='clientes')
 router.register(r'compras', CompraViewSet, basename='compras')
 router.register(r'detalles-compra', DetalleCompraViewSet, basename='detalles-compra')
+router.register(r'detalles-venta', DetalleVentaViewSet, basename='detalles-venta')
 router.register(r'unidades-medida', UnidadMedidaViewSet, basename='unidades-medida')
+router.register(r'ventas', VentaViewSet, basename='ventas')
 
 urlpatterns = [
     path('', include(router.urls)),

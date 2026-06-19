@@ -2,17 +2,21 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 from .models import (
-AppUser, 
-AppUserRol, 
-Categoria, 
-Cliente, 
-Compra, 
-DetalleCompra,
-Producto, 
-Proveedor, 
-Rol, 
-UnidadMedida,
+    AppUser,
+    AppUserRol,
+    Categoria,
+    Cliente,
+    Compra,
+    DetalleCompra,
+    DetalleVenta,
+    Producto,
+    Proveedor,
+    Rol,
+    UnidadMedida,
+    Venta,
 )
+
+
 class RolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rol
@@ -35,16 +39,73 @@ class CategoriaSerializer(serializers.ModelSerializer):
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
+        fields = ['id', 'documento', 'nombre', 'telefono', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+
+class ProveedorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Proveedor
         fields = [
-            'id', 
-            'documento',
-            'nombre', 
+            'id',
+            'nombre',
             'telefono',
+            'email',
+            'direccion',
+            'activo',
             'created_at',
         ]
         read_only_fields = ['id', 'created_at']
 
+
+class ProductoSerializer(serializers.ModelSerializer):
+    categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True)
+    unidad_medida_nombre = serializers.CharField(source='unidad_medida.nombre', read_only=True)
+    unidad_medida_simbolo = serializers.CharField(source='unidad_medida.simbolo', read_only=True)
+
+    class Meta:
+        model = Producto
+        fields = [
+            'id',
+            'codigo',
+            'nombre',
+            'categoria',
+            'categoria_nombre',
+            'unidad_medida',
+            'unidad_medida_nombre',
+            'unidad_medida_simbolo',
+            'precio_venta',
+            'precio_compra_ref',
+            'stock_actual',
+            'stock_minimo',
+            'activo',
+            'created_at',
+        ]
+        read_only_fields = ['id', 'created_at']
+
+
+class DetalleCompraSerializer(serializers.ModelSerializer):
+    producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
+
+    class Meta:
+        model = DetalleCompra
+        fields = [
+            'id',
+            'compra',
+            'producto',
+            'producto_nombre',
+            'cantidad',
+            'precio_unitario',
+            'subtotal',
+        ]
+        read_only_fields = ['id']
+
+
 class CompraSerializer(serializers.ModelSerializer):
+    proveedor_nombre = serializers.CharField(source='proveedor.nombre', read_only=True)
+    usuario_username = serializers.CharField(source='usuario.username', read_only=True)
+    detalles = DetalleCompraSerializer(many=True, read_only=True)
+
     class Meta:
         model = Compra
         fields = [
@@ -59,27 +120,56 @@ class CompraSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'fecha', 'detalles']
 
-class DetalleCompraSerializer(serializers.ModelSerializer):
-    producto_nombre = serializers.CharField(source='producto.nombre',read_only=True)
+
+class DetalleVentaSerializer(serializers.ModelSerializer):
+    producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
 
     class Meta:
-        model = DetalleCompra
+        model = DetalleVenta
         fields = [
             'id',
-            'compra',
+            'venta',
             'producto',
             'producto_nombre',
             'cantidad',
             'precio_unitario',
+            'descuento_unitario',
             'subtotal',
         ]
-        readl_only_fields = ['id']
+        read_only_fields = ['id']
+
+
+class VentaSerializer(serializers.ModelSerializer):
+    cliente_nombre = serializers.CharField(source='cliente.nombre', read_only=True)
+    cajero_username = serializers.CharField(source='cajero.username', read_only=True)
+    detalles = DetalleVentaSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Venta
+        fields = [
+            'id',
+            'cliente',
+            'cliente_nombre',
+            'cajero',
+            'cajero_username',
+            'turno',
+            'fecha',
+            'metodo_pago',
+            'total',
+            'monto_recibido',
+            'cambio',
+            'detalles',
+        ]
+        read_only_fields = ['id', 'fecha', 'detalles']
+
 
 class AppUserRolSerializer(serializers.ModelSerializer):
     rol_nombre = serializers.CharField(source='rol.nombre', read_only=True)
+
     class Meta:
         model = AppUserRol
         fields = ['user', 'rol', 'rol_nombre']
+
 
 class AppUserSerializer(serializers.ModelSerializer):
     roles = RolSerializer(many=True, read_only=True)
@@ -111,41 +201,3 @@ class AppUserSerializer(serializers.ModelSerializer):
             instance.password_hash = make_password(password)
 
         return super().update(instance, validated_data)
-    
-class ProductoSerializer(serializers.ModelSerializer):
-    categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True)
-    unidad_medida_nombre = serializers.CharField(source='unidad_medida.nombre', read_only=True)
-    unidad_medida_simbolo = serializers.CharField(source='unidad_medida.simbolo', read_only=True)
-    
-    class Meta:
-        model = Producto
-        fields = [
-            'id',
-            'codigo',
-            'nombre',
-            'categoria',
-            'categoria_nombre',
-            'unidad_medida',
-            'unidad_medida_nombre',
-            'unidad_medida_simbolo',
-            'precio_venta',
-            'precio_compra_ref',
-            'stock_actual',
-            'stock_minimo',
-            'activo',
-            'created_at',
-        ]
-        read_only_fields = ['id', 'created_at']
-class ProveedorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Proveedor
-        fields = [
-            'id',
-            'nombre',
-            'telefono',
-            'email',
-            'direccion',
-            'activo',
-            'create_at',
-        ]
-        read_only_fields = ['id', 'created_at']
