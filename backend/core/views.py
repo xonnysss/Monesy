@@ -1,12 +1,13 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
-from .models import AppUser, AppUserRol, Categoria, Producto, Rol, UnidadMedida
+from .models import AppUser, AppUserRol, Categoria, Producto, Proveedor, Rol, UnidadMedida
 from .serializers import (
     AppUserRolSerializer,
     AppUserSerializer,
     CategoriaSerializer,
     ProductoSerializer,
+    ProveedorSerializer,
     RolSerializer,
     UnidadMedidaSerializer,
 )
@@ -78,3 +79,7 @@ class UnidadMedidaViewSet(viewsets.ModelViewSet):
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.select_related('categoria', 'unidad_medida').all().order_by('id')
     serializer_class = ProductoSerializer
+
+class ProveedorViewSet(viewsets.ModelViewSet):
+    queryset = Proveedor.objects.all().order_by('id')
+    serializer_class = ProveedorSerializer
