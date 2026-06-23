@@ -9,6 +9,8 @@ from .models import (
     Compra,
     DetalleCompra,
     DetalleVenta,
+    Devolucion,
+    DetalleDevolucion,
     MovimientoStock,
     Producto,
     Proveedor,
@@ -219,6 +221,44 @@ class VentaSerializer(serializers.ModelSerializer):
             'total',
             'monto_recibido',
             'cambio',
+            'detalles',
+        ]
+        read_only_fields = ['id', 'fecha', 'detalles']
+
+
+class DetalleDevolucionSerializer(serializers.ModelSerializer):
+    producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
+
+    class Meta:
+        model = DetalleDevolucion
+        fields = [
+            'id',
+            'devolucion',
+            'producto',
+            'producto_nombre',
+            'cantidad',
+            'precio_unitario',
+            'subtotal',
+        ]
+        read_only_fields = ['id']
+
+
+class DevolucionSerializer(serializers.ModelSerializer):
+    venta_id = serializers.IntegerField(source='venta.id', read_only=True)
+    usuario_username = serializers.CharField(source='usuario.username', read_only=True)
+    detalles = DetalleDevolucionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Devolucion
+        fields = [
+            'id',
+            'venta',
+            'venta_id',
+            'usuario',
+            'usuario_username',
+            'fecha',
+            'motivo',
+            'total_devuelto',
             'detalles',
         ]
         read_only_fields = ['id', 'fecha', 'detalles']

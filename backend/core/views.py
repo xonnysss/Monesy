@@ -9,6 +9,8 @@ Cliente,
 Compra,
 DetalleCompra,
 DetalleVenta,
+Devolucion,
+DetalleDevolucion,
 MovimientoStock,
 Producto, 
 Proveedor, 
@@ -25,6 +27,8 @@ from .serializers import (
     CompraSerializer,
     DetalleCompraSerializer,
     DetalleVentaSerializer,
+    DevolucionSerializer,
+    DetalleDevolucionSerializer,
     MovimientoStockSerializer,
     ProductoSerializer,
     ProveedorSerializer,
@@ -94,6 +98,16 @@ class CompraViewSet(viewsets.ModelViewSet):
 class VentaViewSet(viewsets.ModelViewSet):
     queryset = Venta.objects.select_related('cliente', 'cajero', 'turno').all().order_by('id')
     serializer_class = VentaSerializer
+
+
+class DevolucionViewSet(viewsets.ModelViewSet):
+    queryset = Devolucion.objects.select_related('venta', 'usuario').all().order_by('-fecha', '-id')
+    serializer_class = DevolucionSerializer
+
+
+class DetalleDevolucionViewSet(viewsets.ModelViewSet):
+    queryset = DetalleDevolucion.objects.select_related('devolucion', 'producto').all().order_by('id')
+    serializer_class = DetalleDevolucionSerializer
 
 
 class DetalleCompraViewSet(viewsets.ModelViewSet):
