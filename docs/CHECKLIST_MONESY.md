@@ -23,7 +23,7 @@
 - [x] 19. Crear API de compras
 - [x] 20. Crear API de ventas
 - [x] 21. Crear API de movimientos de stock
-- [ ] 22. Crear API de turnos de caja
+- [x] 22. Crear API de turnos de caja
 - [ ] 23. Crear API de devoluciones
 - [ ] 24. Crear API de historial de precios
 - [ ] 25. Crear frontend con React + Vite + TypeScript
