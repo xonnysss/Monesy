@@ -9,12 +9,14 @@ from .models import (
     Compra,
     DetalleCompra,
     DetalleVenta,
+    MovimientoStock,
     Producto,
     Proveedor,
     Rol,
     UnidadMedida,
     Venta,
 )
+from .services import registrar_movimiento_stock
 
 
 class RolSerializer(serializers.ModelSerializer):
@@ -82,6 +84,40 @@ class ProductoSerializer(serializers.ModelSerializer):
             'created_at',
         ]
         read_only_fields = ['id', 'created_at']
+
+
+class MovimientoStockSerializer(serializers.ModelSerializer):
+    producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
+    usuario_username = serializers.CharField(source='usuario.username', read_only=True)
+    cantidad = serializers.IntegerField(required=False, min_value=1)
+    stock_nuevo = serializers.IntegerField(required=False, min_value=0)
+    class Meta:
+        model = MovimientoStock
+        fields = [
+            'id',
+            'producto',
+            'producto_nombre',
+            'usuario',
+            'usuario_username',
+            'tipo',
+            'cantidad',
+            'stock_anterior',
+            'stock_nuevo',
+            'fecha',
+            'referencia_tipo',
+            'referencia_id',
+            'observacion',
+        ]
+        read_only_fields = [
+            'id',
+            'stock_anterior',
+            'fecha',
+        ]
+    def create(self, validated_data):
+        try:
+            return registrar_movimiento_stock(**validated_data)
+        except Exception as exc:
+            raise serializers.ValidationError({'detail': str(exc)})
 
 
 class DetalleCompraSerializer(serializers.ModelSerializer):

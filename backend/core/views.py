@@ -9,6 +9,7 @@ Cliente,
 Compra,
 DetalleCompra,
 DetalleVenta,
+MovimientoStock,
 Producto, 
 Proveedor, 
 Rol, 
@@ -23,6 +24,7 @@ from .serializers import (
     CompraSerializer,
     DetalleCompraSerializer,
     DetalleVentaSerializer,
+    MovimientoStockSerializer,
     ProductoSerializer,
     ProveedorSerializer,
     RolSerializer,
@@ -118,9 +120,24 @@ class UnidadMedidaViewSet(viewsets.ModelViewSet):
 
         return super().destroy(request, *args, **kwargs)
 
+
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.select_related('categoria', 'unidad_medida').all().order_by('id')
     serializer_class = ProductoSerializer
+
+
+class MovimientoStockViewSet(viewsets.ModelViewSet):
+    queryset = MovimientoStock.objects.select_related('producto', 'usuario').all().order_by('-fecha', '-id')
+    serializer_class = MovimientoStockSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        return Response(
+            {
+                'detail': 'No se puede eliminar un movimiento de stock porque forma parte del historial.'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
 
 class ProveedorViewSet(viewsets.ModelViewSet):
     queryset = Proveedor.objects.all().order_by('id')
