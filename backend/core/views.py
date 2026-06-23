@@ -12,7 +12,8 @@ DetalleVenta,
 MovimientoStock,
 Producto, 
 Proveedor, 
-Rol, 
+Rol,
+TurnoCaja, 
 UnidadMedida,
 Venta,
 )
@@ -28,6 +29,7 @@ from .serializers import (
     ProductoSerializer,
     ProveedorSerializer,
     RolSerializer,
+    TurnoCajaSerializer,
     UnidadMedidaSerializer,
     VentaSerializer,
 )
@@ -137,6 +139,11 @@ class MovimientoStockViewSet(viewsets.ModelViewSet):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class TurnoCajaViewSet(viewsets.ModelViewSet):
+    queryset = TurnoCaja.objects.select_related('usuario').all().order_by('-fecha_apertura', '-id')
+    serializer_class = TurnoCajaSerializer
 
 
 class ProveedorViewSet(viewsets.ModelViewSet):

@@ -13,6 +13,7 @@ from .models import (
     Producto,
     Proveedor,
     Rol,
+    TurnoCaja,
     UnidadMedida,
     Venta,
 )
@@ -118,6 +119,30 @@ class MovimientoStockSerializer(serializers.ModelSerializer):
             return registrar_movimiento_stock(**validated_data)
         except Exception as exc:
             raise serializers.ValidationError({'detail': str(exc)})
+
+
+class TurnoCajaSerializer(serializers.ModelSerializer):
+    usuario_username = serializers.CharField(source='usuario.username', read_only=True)
+
+    class Meta:
+        model = TurnoCaja
+        fields = [
+            'id',
+            'usuario',
+            'usuario_username', 
+            'fecha_apertura',
+            'fecha_cierre',
+            'monto_inicial',
+            'monto_final_real',
+            'monto_final_sistema',
+            'diferencia',
+            'observacion',
+        ]
+        read_only_fields = [
+            'id',
+            'fecha_apertura',
+            'diferencia',
+        ]
 
 
 class DetalleCompraSerializer(serializers.ModelSerializer):
