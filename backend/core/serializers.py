@@ -13,6 +13,7 @@ from .models import (
     DetalleDevolucion,
     MovimientoStock,
     Producto,
+    HistorialPrecio,
     Proveedor,
     Rol,
     TurnoCaja,
@@ -67,7 +68,11 @@ class ProductoSerializer(serializers.ModelSerializer):
     categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True)
     unidad_medida_nombre = serializers.CharField(source='unidad_medida.nombre', read_only=True)
     unidad_medida_simbolo = serializers.CharField(source='unidad_medida.simbolo', read_only=True)
-
+    usuario_cambio_precio = serializers.PrimaryKeyRelatedField(
+        queryset=AppUser.objects.all(),
+        write_only=True,
+        required=False
+        )
     class Meta:
         model = Producto
         fields = [
@@ -81,12 +86,60 @@ class ProductoSerializer(serializers.ModelSerializer):
             'unidad_medida_simbolo',
             'precio_venta',
             'precio_compra_ref',
+            'usuario_cambio_precio',
             'stock_actual',
             'stock_minimo',
             'activo',
             'created_at',
         ]
         read_only_fields = ['id', 'created_at']
+        
+    def update(self, instance, validated_data):
+        usuario_cambio_precio = validated_data.pop('usuario_cambio_precio', None)
+
+        precio_venta_anterior = instance.precio_venta
+        precio_compra_anterior = instance.precio_compra_ref
+
+        producto = super().update(instance, validated_data)
+
+        if usuario_cambio_precio and producto.precio_venta != precio_venta_anterior:
+            HistorialPrecio.objects.create(
+                producto=producto,
+                usuario=usuario_cambio_precio,
+                precio_anterior=precio_venta_anterior,
+                precio_nuevo=producto.precio_venta,
+                tipo=HistorialPrecio.TIPO_VENTA,
+            )
+
+        if usuario_cambio_precio and producto.precio_compra_ref != precio_compra_anterior:
+            HistorialPrecio.objects.create(
+                producto=producto,
+                usuario=usuario_cambio_precio,
+                precio_anterior=precio_compra_anterior,
+                precio_nuevo=producto.precio_compra_ref,
+                tipo=HistorialPrecio.TIPO_COMPRA,
+            )
+        return producto
+
+
+class HistorialPrecioSerializer(serializers.ModelSerializer):
+    producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
+    usuario_username = serializers.CharField(source='usuario.username', read_only=True)
+
+    class Meta:
+        model = HistorialPrecio
+        fields = [
+            'id',
+            'producto',
+            'producto_nombre',
+            'usuario',
+            'usuario_username',
+            'precio_anterior',
+            'precio_nuevo',
+            'tipo',
+            'cambiado_en'
+        ]
+        read_only_fields = ['id', 'cambiado_en']
 
 
 class MovimientoStockSerializer(serializers.ModelSerializer):

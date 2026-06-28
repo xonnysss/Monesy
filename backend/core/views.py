@@ -13,6 +13,7 @@ Devolucion,
 DetalleDevolucion,
 MovimientoStock,
 Producto, 
+HistorialPrecio,
 Proveedor, 
 Rol,
 TurnoCaja, 
@@ -31,6 +32,7 @@ from .serializers import (
     DetalleDevolucionSerializer,
     MovimientoStockSerializer,
     ProductoSerializer,
+    HistorialPrecioSerializer,
     ProveedorSerializer,
     RolSerializer,
     TurnoCajaSerializer,
@@ -140,6 +142,17 @@ class UnidadMedidaViewSet(viewsets.ModelViewSet):
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.select_related('categoria', 'unidad_medida').all().order_by('id')
     serializer_class = ProductoSerializer
+
+
+class HistorialPrecioViewSet(viewsets.ModelViewSet):
+    queryset = HistorialPrecio.objects.select_related('producto', 'usuario').order_by('-cambiado_en', '-id')
+    serializer_class = HistorialPrecioSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        return Response(
+            {'detail': 'No se puede eliminar un historial de precio porque forma parte del historial del producto'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class MovimientoStockViewSet(viewsets.ModelViewSet):

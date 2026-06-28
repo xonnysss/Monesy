@@ -13,6 +13,7 @@ from .views import (
     DetalleDevolucionViewSet,
     MovimientoStockViewSet,
     ProductoViewSet,
+    HistorialPrecioViewSet,
     ProveedorViewSet,
     RolViewSet,
     TurnoCajaViewSet,
@@ -33,6 +34,7 @@ router.register(r'detalles-compra', DetalleCompraViewSet, basename='detalles-com
 router.register(r'detalles-venta', DetalleVentaViewSet, basename='detalles-venta')
 router.register(r'detalles-devolucion', DetalleDevolucionViewSet, basename='detalles-devolucion')
 router.register(r'devoluciones', DevolucionViewSet, basename='devoluciones')
+router.register(r'historiales-precio', HistorialPrecioViewSet, basename='historiales-precio')
 router.register(r'movimientos-stock', MovimientoStockViewSet, basename='movimientos-stock')
 router.register(r'turnos-caja', TurnoCajaViewSet, basename='turnos-caja')
 router.register(r'unidades-medida', UnidadMedidaViewSet, basename='unidades-medida')
