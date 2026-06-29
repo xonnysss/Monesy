@@ -24,10 +24,10 @@
 - [x] 20. Crear API de ventas
 - [x] 21. Crear API de movimientos de stock
 - [x] 22. Crear API de turnos de caja
-- [ ] 23. Crear API de devoluciones
-- [ ] 24. Crear API de historial de precios
-- [ ] 25. Crear frontend con React + Vite + TypeScript
-- [ ] 26. Instalar Tailwind CSS
+- [x] 23. Crear API de devoluciones
+- [x] 24. Crear API de historial de precios
+- [x] 25. Crear frontend con React + Vite + TypeScript
+- [x] 26. Instalar Tailwind CSS
 - [ ] 27. Instalar shadcn/ui
 - [ ] 28. Instalar React Router
 - [ ] 29. Instalar Axios
