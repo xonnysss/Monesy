@@ -28,7 +28,7 @@
 - [x] 24. Crear API de historial de precios
 - [x] 25. Crear frontend con React + Vite + TypeScript
 - [x] 26. Instalar Tailwind CSS
-- [ ] 27. Instalar shadcn/ui
+- [x] 27. Instalar shadcn/ui
 - [ ] 28. Instalar React Router
 - [ ] 29. Instalar Axios
 - [ ] 30. Instalar TanStack Query
