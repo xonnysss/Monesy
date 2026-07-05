@@ -29,9 +29,9 @@
 - [x] 25. Crear frontend con React + Vite + TypeScript
 - [x] 26. Instalar Tailwind CSS
 - [x] 27. Instalar shadcn/ui
-- [ ] 28. Instalar React Router
-- [ ] 29. Instalar Axios
-- [ ] 30. Instalar TanStack Query
+- [x] 28. Instalar React Router
+- [x] 29. Instalar Axios
+- [x] 30. Instalar TanStack Query
 - [ ] 31. Crear layout principal del sistema
 - [ ] 32. Crear login
 - [ ] 33. Crear dashboard
