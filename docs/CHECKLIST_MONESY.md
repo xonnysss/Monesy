@@ -32,7 +32,7 @@
 - [x] 28. Instalar React Router
 - [x] 29. Instalar Axios
 - [x] 30. Instalar TanStack Query
-- [ ] 31. Crear layout principal del sistema
+- [x] 31. Crear layout principal del sistema
 - [ ] 32. Crear login
 - [ ] 33. Crear dashboard
 - [ ] 34. Crear pantalla de productos
