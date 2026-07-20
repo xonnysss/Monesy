@@ -1,4 +1,3 @@
-from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 from .models import (
@@ -326,15 +325,34 @@ class AppUserRolSerializer(serializers.ModelSerializer):
 
 
 class AppUserSerializer(serializers.ModelSerializer):
+    django_user_id = serializers.IntegerField(
+        source='django_user.id',
+        read_only=True,
+    )
+    username = serializers.CharField(
+        source='django_user.username',
+        read_only=True,
+    )
+    first_name = serializers.CharField(
+        source='django_user.first_name',
+        read_only=True,
+    )
+    last_name = serializers.CharField(
+        source='django_user.last_name',
+        read_only=True,
+    )
+    is_active = serializers.BooleanField(
+        source='django_user.is_active',
+        read_only=True,
+    )
     roles = RolSerializer(many=True, read_only=True)
-    password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = AppUser
         fields = [
             'id',
+            'django_user_id',
             'username',
-            'password',
             'first_name',
             'last_name',
             'is_active',
@@ -342,16 +360,3 @@ class AppUserSerializer(serializers.ModelSerializer):
             'roles',
         ]
         read_only_fields = ['id', 'created_at', 'roles']
-
-    def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        validated_data['password_hash'] = make_password(password) if password else make_password(None)
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        password = validated_data.pop('password', None)
-
-        if password:
-            instance.password_hash = make_password(password)
-
-        return super().update(instance, validated_data)

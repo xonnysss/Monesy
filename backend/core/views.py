@@ -59,8 +59,13 @@ class RolViewSet(viewsets.ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-class AppUserViewSet(viewsets.ModelViewSet):
-    queryset = AppUser.objects.all().order_by('id')
+class AppUserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = (
+        AppUser.objects
+        .select_related('django_user')
+        .prefetch_related('roles')
+        .order_by('id')
+    )
     serializer_class = AppUserSerializer
 
 
