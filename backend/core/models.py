@@ -21,7 +21,7 @@ class AppUser(models.Model):
     first_name = models.CharField(max_length=100, blank=True, null=True)
     last_name = models.CharField(max_length=100, blank=True, null=True)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     roles = models.ManyToManyField(Rol, through='AppUserRol', related_name='users')
 
     class Meta:
@@ -33,6 +33,7 @@ class AppUser(models.Model):
 
 
 class AppUserRol(models.Model):
+    pk = models.CompositePrimaryKey('user_id', 'rol_id')
     user = models.ForeignKey(AppUser, models.CASCADE, db_column='user_id')
     rol = models.ForeignKey(Rol, models.PROTECT, db_column='rol_id')
 
@@ -52,7 +53,7 @@ class Proveedor(models.Model):
     email = models.CharField(max_length=150, blank=True, null=True)
     direccion = models.TextField(blank=True, null=True)
     activo = models.BooleanField(default=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         managed = False
@@ -67,7 +68,7 @@ class Cliente(models.Model):
     documento = models.CharField(max_length=50, unique=True)
     nombre = models.CharField(max_length=150)
     telefono = models.CharField(max_length=30, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         managed = False
@@ -93,7 +94,7 @@ class UnidadMedida(models.Model):
 class Categoria(models.Model):
     id = models.BigAutoField(primary_key=True)
     nombre = models.CharField(max_length=120, unique=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         managed = False
@@ -114,7 +115,7 @@ class Producto(models.Model):
     stock_actual = models.IntegerField(default=0)
     stock_minimo = models.IntegerField(default=0)
     activo = models.BooleanField(default=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         managed = False
@@ -138,7 +139,7 @@ class HistorialPrecio(models.Model):
     precio_anterior = models.DecimalField(max_digits=12, decimal_places=2)
     precio_nuevo = models.DecimalField(max_digits=12, decimal_places=2)
     tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
-    cambiado_en = models.DateTimeField(blank=True, null=True)
+    cambiado_en = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         managed = False
@@ -151,7 +152,7 @@ class HistorialPrecio(models.Model):
 class TurnoCaja(models.Model):
     id = models.BigAutoField(primary_key=True)
     usuario = models.ForeignKey(AppUser, models.PROTECT, db_column='usuario_id')
-    fecha_apertura = models.DateTimeField(blank=True, null=True)
+    fecha_apertura = models.DateTimeField(auto_now_add=True)
     fecha_cierre = models.DateTimeField(blank=True, null=True)
     monto_inicial = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     monto_final_real = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
@@ -189,7 +190,7 @@ class Venta(models.Model):
     cliente = models.ForeignKey(Cliente, models.SET_NULL, db_column='cliente_id', blank=True, null=True)
     cajero = models.ForeignKey(AppUser, models.PROTECT, db_column='cajero_id', related_name='ventas')
     turno = models.ForeignKey(TurnoCaja, models.SET_NULL, db_column='turno_id', blank=True, null=True)
-    fecha = models.DateTimeField(blank=True, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
     metodo_pago = models.CharField(max_length=20, choices=METODO_PAGO_CHOICES)
     total = models.DecimalField(max_digits=12, decimal_places=2)
     monto_recibido = models.DecimalField(max_digits=12, decimal_places=2, default=0)
@@ -225,7 +226,7 @@ class Devolucion(models.Model):
     id = models.BigAutoField(primary_key=True)
     venta = models.ForeignKey(Venta, models.PROTECT, db_column='venta_id')
     usuario = models.ForeignKey(AppUser, models.PROTECT, db_column='usuario_id')
-    fecha = models.DateTimeField(blank=True, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
     motivo = models.TextField(blank=True, null=True)
     total_devuelto = models.DecimalField(max_digits=12, decimal_places=2)
 
@@ -258,7 +259,7 @@ class Compra(models.Model):
     id = models.BigAutoField(primary_key=True)
     proveedor = models.ForeignKey(Proveedor, models.PROTECT, db_column='proveedor_id')
     usuario = models.ForeignKey(AppUser, models.PROTECT, db_column='usuario_id')
-    fecha = models.DateTimeField(blank=True, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=12, decimal_places=2)
 
     class Meta:
@@ -307,7 +308,7 @@ class MovimientoStock(models.Model):
     cantidad = models.IntegerField()
     stock_anterior = models.IntegerField()
     stock_nuevo = models.IntegerField()
-    fecha = models.DateTimeField(blank=True, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
     referencia_tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, blank=True, null=True)
     referencia_id = models.BigIntegerField(blank=True, null=True)
     observacion = models.TextField(blank=True, null=True)
