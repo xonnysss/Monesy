@@ -33,12 +33,14 @@ CREATE TABLE rol (
 
 CREATE TABLE app_user (
     id              BIGSERIAL PRIMARY KEY,
+    django_user_id INTEGER NOT NULL,
     username        VARCHAR(50) NOT NULL UNIQUE,
     password_hash   TEXT NOT NULL,
     first_name      VARCHAR(100),
     last_name       VARCHAR(100),
     is_active       BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_app_user_django_user UNIQUE (django_user_id)
 );
 
 CREATE TABLE app_user_rol (

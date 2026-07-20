@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.db.models import F
 
@@ -16,6 +17,12 @@ class Rol(models.Model):
 
 class AppUser(models.Model):
     id = models.BigAutoField(primary_key=True)
+    django_user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        models.PROTECT,
+        db_column='django_user_id',
+        related_name='perfil_monesy',
+    )
     username = models.CharField(max_length=50, unique=True)
     password_hash = models.TextField()
     first_name = models.CharField(max_length=100, blank=True, null=True)
