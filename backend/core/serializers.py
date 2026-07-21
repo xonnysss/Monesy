@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from .models import (
@@ -67,11 +68,7 @@ class ProductoSerializer(serializers.ModelSerializer):
     categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True)
     unidad_medida_nombre = serializers.CharField(source='unidad_medida.nombre', read_only=True)
     unidad_medida_simbolo = serializers.CharField(source='unidad_medida.simbolo', read_only=True)
-    usuario_cambio_precio = serializers.PrimaryKeyRelatedField(
-        queryset=AppUser.objects.all(),
-        write_only=True,
-        required=False
-        )
+
     class Meta:
         model = Producto
         fields = [
@@ -85,39 +82,66 @@ class ProductoSerializer(serializers.ModelSerializer):
             'unidad_medida_simbolo',
             'precio_venta',
             'precio_compra_ref',
-            'usuario_cambio_precio',
             'stock_actual',
             'stock_minimo',
             'activo',
             'created_at',
         ]
         read_only_fields = ['id', 'stock_actual', 'created_at']
-        
-    def update(self, instance, validated_data):
-        usuario_cambio_precio = validated_data.pop('usuario_cambio_precio', None)
 
+    def obtener_usuario_monesy(self):
+        request = self.context.get('request')
+
+        if request is None or not request.user.is_authenticated:
+            raise serializers.ValidationError({
+                'detail': 'No se pudo identificar al usuario autenticado.'
+            })
+        try:
+            return request.user.perfil_monesy
+        except AppUser.DoesNotExist:
+            raise serializers.ValidationError({
+                'detail': 'El usuario autenticado no tiene un perfil Monesy.'
+            })
+        
+    @transaction.atomic
+    def update(self, instance, validated_data):
         precio_venta_anterior = instance.precio_venta
         precio_compra_anterior = instance.precio_compra_ref
 
+        cambia_precio_venta = (
+            'precio_venta' in validated_data
+            and validated_data['precio_venta'] != precio_venta_anterior
+        )
+        cambia_precio_compra = (
+            'precio_compra_ref' in validated_data
+            and validated_data['precio_compra_ref'] != precio_compra_anterior
+        )
+
+        usuario = None
+
+        if cambia_precio_venta or cambia_precio_compra:
+            usuario = self.obtener_usuario_monesy()
+
         producto = super().update(instance, validated_data)
 
-        if usuario_cambio_precio and producto.precio_venta != precio_venta_anterior:
+        if cambia_precio_venta:
             HistorialPrecio.objects.create(
                 producto=producto,
-                usuario=usuario_cambio_precio,
+                usuario=usuario,
                 precio_anterior=precio_venta_anterior,
                 precio_nuevo=producto.precio_venta,
                 tipo=HistorialPrecio.TIPO_VENTA,
             )
 
-        if usuario_cambio_precio and producto.precio_compra_ref != precio_compra_anterior:
+        if cambia_precio_compra:
             HistorialPrecio.objects.create(
                 producto=producto,
-                usuario=usuario_cambio_precio,
+                usuario=usuario,
                 precio_anterior=precio_compra_anterior,
                 precio_nuevo=producto.precio_compra_ref,
                 tipo=HistorialPrecio.TIPO_COMPRA,
             )
+
         return producto
 
 
