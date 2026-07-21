@@ -1,4 +1,4 @@
-from rest_framework import status, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 
 from .models import (
@@ -149,28 +149,24 @@ class ProductoViewSet(viewsets.ModelViewSet):
     serializer_class = ProductoSerializer
 
 
-class HistorialPrecioViewSet(viewsets.ModelViewSet):
+class HistorialPrecioViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = HistorialPrecio.objects.select_related('producto', 'usuario').order_by('-cambiado_en', '-id')
     serializer_class = HistorialPrecioSerializer
 
-    def destroy(self, request, *args, **kwargs):
-        return Response(
-            {'detail': 'No se puede eliminar un historial de precio porque forma parte del historial del producto'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
 
-
-class MovimientoStockViewSet(viewsets.ModelViewSet):
-    queryset = MovimientoStock.objects.select_related('producto', 'usuario').all().order_by('-fecha', '-id')
+class MovimientoStockViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = (
+        MovimientoStock.objects
+        .select_related('producto', 'usuario')
+        .all()
+        .order_by('-fecha', '-id')
+    )
     serializer_class = MovimientoStockSerializer
-
-    def destroy(self, request, *args, **kwargs):
-        return Response(
-            {
-                'detail': 'No se puede eliminar un movimiento de stock porque forma parte del historial.'
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
 
 
 class TurnoCajaViewSet(viewsets.ModelViewSet):

@@ -91,7 +91,7 @@ class ProductoSerializer(serializers.ModelSerializer):
             'activo',
             'created_at',
         ]
-        read_only_fields = ['id', 'created_at']
+        read_only_fields = ['id', 'stock_actual', 'created_at']
         
     def update(self, instance, validated_data):
         usuario_cambio_precio = validated_data.pop('usuario_cambio_precio', None)
