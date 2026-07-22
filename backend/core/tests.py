@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from types import SimpleNamespace
 
 from django.test import SimpleTestCase
@@ -5,7 +6,11 @@ from rest_framework import mixins, viewsets
 from rest_framework.exceptions import ValidationError
 
 from .models import AppUserRol
-from .serializers import ProductoSerializer
+from .serializers import (
+    MovimientoStockSerializer,
+    ProductoSerializer,
+    obtener_usuario_monesy,
+)
 from .views import HistorialPrecioViewSet, MovimientoStockViewSet
 
 
@@ -23,6 +28,37 @@ class ContratosBackendTests(SimpleTestCase):
             serializer.fields['stock_actual'].read_only
         )
 
+    def test_usuario_movimiento_stock_es_solo_lectura(self):
+        serializer = MovimientoStockSerializer()
+
+        self.assertTrue(
+            serializer.fields['usuario'].read_only
+        )
+
+    @patch('core.serializers.registrar_movimiento_stock')
+    def test_movimiento_stock_usa_usuario_autenticado(self, servicio_stock):
+        perfil = object()
+        usuario = SimpleNamespace(
+            is_authenticated=True,
+            perfil_monesy=perfil,
+        )
+        request = SimpleNamespace(user=usuario)
+        serializer = MovimientoStockSerializer(
+            context={'request': request}
+        )
+        datos_movimiento = {
+            'producto': object(),
+            'tipo': 'COMPRA',
+            'cantidad': 10,
+        }
+
+        serializer.create(datos_movimiento)
+
+        servicio_stock.assert_called_once_with(
+            usuario=perfil,
+            **datos_movimiento,
+        )
+
     def test_usuario_cambio_precio_no_esta_en_payload(self):
         serializer = ProductoSerializer()
 
@@ -38,19 +74,14 @@ class ContratosBackendTests(SimpleTestCase):
             perfil_monesy=perfil,
         )
         request = SimpleNamespace(user=usuario)
-        serializer = ProductoSerializer(
-            context={'request': request}
-        )
 
-        resultado = serializer.obtener_usuario_monesy()
+        resultado = obtener_usuario_monesy({'request': request})
 
         self.assertIs(resultado, perfil)
 
     def test_rechaza_cambio_sin_peticion_autenticada(self):
-        serializer = ProductoSerializer()
-
         with self.assertRaises(ValidationError):
-            serializer.obtener_usuario_monesy()
+            obtener_usuario_monesy({})
 
     def test_historial_precio_es_solo_lectura(self):
         self.assertTrue(

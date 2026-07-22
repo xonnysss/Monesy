@@ -22,6 +22,20 @@ from .models import (
 )
 from .services import registrar_movimiento_stock
 
+def obtener_usuario_monesy(context):
+    request = context.get('request')
+
+    if request is None or not request.user.is_authenticated:
+        raise serializers.ValidationError({
+            'detail': 'No se pudo identificar al usuario autenticado.'
+        })
+
+    try:
+        return request.user.perfil_monesy
+    except AppUser.DoesNotExist:
+        raise serializers.ValidationError({
+            'detail': 'El usuario autenticado no tiene un perfil Monesy.'
+        })
 
 class RolSerializer(serializers.ModelSerializer):
     class Meta:
@@ -89,20 +103,7 @@ class ProductoSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'stock_actual', 'created_at']
 
-    def obtener_usuario_monesy(self):
-        request = self.context.get('request')
 
-        if request is None or not request.user.is_authenticated:
-            raise serializers.ValidationError({
-                'detail': 'No se pudo identificar al usuario autenticado.'
-            })
-        try:
-            return request.user.perfil_monesy
-        except AppUser.DoesNotExist:
-            raise serializers.ValidationError({
-                'detail': 'El usuario autenticado no tiene un perfil Monesy.'
-            })
-        
     @transaction.atomic
     def update(self, instance, validated_data):
         precio_venta_anterior = instance.precio_venta
@@ -120,7 +121,7 @@ class ProductoSerializer(serializers.ModelSerializer):
         usuario = None
 
         if cambia_precio_venta or cambia_precio_compra:
-            usuario = self.obtener_usuario_monesy()
+            usuario = obtener_usuario_monesy(self.context)
 
         producto = super().update(instance, validated_data)
 
@@ -189,12 +190,19 @@ class MovimientoStockSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             'id',
+            'usuario',
             'stock_anterior',
             'fecha',
         ]
+
     def create(self, validated_data):
+        usuario = obtener_usuario_monesy(self.context)
+
         try:
-            return registrar_movimiento_stock(**validated_data)
+            return registrar_movimiento_stock(
+                usuario=usuario,
+                **validated_data,
+            )
         except Exception as exc:
             raise serializers.ValidationError({'detail': str(exc)})
 

@@ -58,11 +58,11 @@
   - [x] Registrar el usuario autenticado en los cambios de precio
   - [x] Agregar pruebas de contratos criticos del backend
   - [x] Verificar Django, pruebas, lint y build
-- [ ] 31.6. Completar seguridad y trazabilidad de movimientos de stock
-  - [ ] Obtener el usuario del movimiento desde el JWT
-  - [ ] Impedir que el cliente envie otro usuario en el payload
-  - [ ] Agregar pruebas del contrato de seguridad
-  - [ ] Verificar check, tests y correspondencia con PostgreSQL
+- [x] 31.6. Completar seguridad y trazabilidad de movimientos de stock
+  - [x] Obtener el usuario del movimiento desde el JWT
+  - [x] Impedir que el cliente envie otro usuario en el payload
+  - [x] Agregar pruebas del contrato de seguridad
+  - [x] Verificar check, tests y correspondencia con PostgreSQL
 
 ## Fase 5. Autenticacion e integracion inicial
 
