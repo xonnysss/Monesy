@@ -51,7 +51,7 @@ class ContratosBackendTests(SimpleTestCase):
 
         with self.assertRaises(ValidationError):
             serializer.obtener_usuario_monesy()
-            
+
     def test_historial_precio_es_solo_lectura(self):
         self.assertTrue(
             issubclass(
