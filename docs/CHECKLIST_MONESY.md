@@ -69,7 +69,7 @@
 - [ ] 32. Crear login completo
   - [x] Permitir CORS desde el frontend local
   - [x] Configurar la URL base de Axios mediante variables de entorno
-  - [ ] Crear el servicio de autenticacion
+  - [x] Crear el servicio de autenticacion
   - [ ] Crear el formulario de login
   - [ ] Guardar y renovar los tokens JWT
   - [ ] Enviar el access token automaticamente con Axios
