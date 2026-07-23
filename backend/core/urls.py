@@ -18,6 +18,7 @@ from .views import (
     RolViewSet,
     TurnoCajaViewSet,
     UnidadMedidaViewSet,
+    UsuarioActualView,
     VentaViewSet,
 )
 
@@ -41,5 +42,6 @@ router.register(r'unidades-medida', UnidadMedidaViewSet, basename='unidades-medi
 router.register(r'ventas', VentaViewSet, basename='ventas')
 
 urlpatterns = [
+    path('auth/me/', UsuarioActualView.as_view(), name='usuario-actual'),
     path('', include(router.urls)),
 ]

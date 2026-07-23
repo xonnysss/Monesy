@@ -1,5 +1,8 @@
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from .models import (
 AppUser, 
@@ -39,6 +42,19 @@ from .serializers import (
     UnidadMedidaSerializer,
     VentaSerializer,
 )
+
+
+class UsuarioActualView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        perfil = get_object_or_404(
+            AppUser.objects.prefetch_related('roles'),
+            django_user=request.user,
+        )
+
+        serializer = AppUserSerializer(perfil)
+        return Response(serializer.data)
 
 
 class RolViewSet(viewsets.ModelViewSet):
