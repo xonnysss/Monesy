@@ -10,6 +10,10 @@ export interface AuthTokens {
   refresh: string
 }
 
+interface RefreshResponse {
+    access: string
+}
+
 export async function login(
   credentials: LoginCredentials,
 ): Promise<AuthTokens> {
@@ -19,4 +23,17 @@ export async function login(
   )
 
   return response.data
+}
+
+export async function refreshAccessToken(
+  refreshToken: string,
+): Promise<string> {
+  const response = await api.post<RefreshResponse>(
+    'auth/refresh/',
+    {
+      refresh: refreshToken,
+    },
+  )
+
+  return response.data.access
 }

@@ -70,9 +70,10 @@
   - [x] Permitir CORS desde el frontend local
   - [x] Configurar la URL base de Axios mediante variables de entorno
   - [x] Crear el servicio de autenticacion
-  - [ ] Crear el formulario de login
-  - [ ] Guardar y renovar los tokens JWT
-  - [ ] Enviar el access token automaticamente con Axios
+  - [x] Crear el formulario de login
+  - [x] Guardar los tokens JWT en sessionStorage
+  - [ ] Renovar automaticamente el access token
+  - [x] Enviar el access token automaticamente con Axios
   - [ ] Crear un endpoint para consultar el usuario autenticado y sus roles
   - [ ] Proteger las rutas privadas
   - [ ] Mostrar el usuario real y permitir cerrar sesion
