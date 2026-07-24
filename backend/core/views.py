@@ -1,6 +1,10 @@
+from decimal import Decimal
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.db.models import Count, F, Sum
+from django.db.models.functions import Coalesce
+from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -29,6 +33,7 @@ from .serializers import (
     CategoriaSerializer,
     ClienteSerializer,
     CompraSerializer,
+    DashboardResumenSerializer,
     DetalleCompraSerializer,
     DetalleVentaSerializer,
     DevolucionSerializer,
@@ -54,6 +59,54 @@ class UsuarioActualView(APIView):
         )
 
         serializer = AppUserSerializer(perfil)
+        return Response(serializer.data)
+
+
+class DashboardResumenView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        hoy = timezone.localdate()
+
+        ventas = Venta.objects.filter(fecha__date=hoy)
+        compras = Compra.objects.filter(fecha__date=hoy)
+
+        resumen_ventas = ventas.aggregate(
+            cantidad=Count('id'),
+            total=Coalesce(
+                Sum('total'),
+                Decimal('0.00'),
+            ),
+        )
+
+        resumen_compras = compras.aggregate(
+            cantidad=Count('id'),
+            total=Coalesce(
+                Sum('total'),
+                Decimal('0.00'),
+            ),
+        )
+
+        resumen = {
+            'fecha': hoy,
+            'productos_activos': Producto.objects.filter(
+                activo=True,
+            ).count(),
+            'productos_stock_bajo': Producto.objects.filter(
+                activo=True,
+                stock_actual__lte=F('stock_minimo'),
+            ).count(),
+            'clientes': Cliente.objects.count(),
+            'ventas_hoy': resumen_ventas['cantidad'],
+            'total_ventas_hoy': resumen_ventas['total'],
+            'compras_hoy': resumen_compras['cantidad'],
+            'total_compras_hoy': resumen_compras['total'],
+            'turnos_abiertos': TurnoCaja.objects.filter(
+                fecha_cierre__isnull=True,
+            ).count(),
+        }
+
+        serializer = DashboardResumenSerializer(resumen)
         return Response(serializer.data)
 
 

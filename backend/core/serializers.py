@@ -37,6 +37,23 @@ def obtener_usuario_monesy(context):
             'detail': 'El usuario autenticado no tiene un perfil Monesy.'
         })
 
+class DashboardResumenSerializer(serializers.Serializer):
+    fecha = serializers.DateField()
+    productos_activos = serializers.IntegerField()
+    productos_stock_bajo = serializers.IntegerField()
+    clientes = serializers.IntegerField()
+    ventas_hoy = serializers.IntegerField()
+    total_ventas_hoy = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+    )
+    compras_hoy = serializers.IntegerField()
+    total_compras_hoy = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+    )
+    turnos_abiertos = serializers.IntegerField()
+
 class RolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rol

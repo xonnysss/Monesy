@@ -7,6 +7,7 @@ from .views import (
     CategoriaViewSet,
     ClienteViewSet,
     CompraViewSet,
+    DashboardResumenView,
     DetalleCompraViewSet,
     DetalleVentaViewSet,
     DevolucionViewSet,
@@ -43,5 +44,10 @@ router.register(r'ventas', VentaViewSet, basename='ventas')
 
 urlpatterns = [
     path('auth/me/', UsuarioActualView.as_view(), name='usuario-actual'),
+    path(
+        'dashboard/resumen/',
+        DashboardResumenView.as_view(),
+        name='dashboard-resumen',
+    ),
     path('', include(router.urls)),
 ]

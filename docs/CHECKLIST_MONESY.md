@@ -80,7 +80,7 @@
 
 ## Fase 6. Pantallas y flujos de negocio
 
-- [x] 33. Crear dashboard con datos reales
+- [ ] 33. Crear dashboard con datos reales
 - [ ] 34. Crear pantalla de productos
 - [ ] 35. Crear pantalla de proveedores
 - [ ] 36. Crear pantalla de clientes
@@ -108,7 +108,7 @@
 - [ ] 42. Crear pantalla y endpoints de reportes
 - [ ] 43. Completar la conexion frontend con backend
   - [x] Configurar CORS y cliente Axios base
-  - [ ] Configurar TanStack Query en la aplicacion
+  - [x] Configurar TanStack Query en la aplicacion
   - [ ] Conectar todas las pantallas con sus APIs
   - [ ] Manejar carga, errores y estados vacios
   - [ ] Verificar navegacion y diseno responsivo
