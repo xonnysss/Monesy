@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
+import { useAuth } from '@/hooks/useAuth'
 
 import { Button } from '@/components/ui/button'
 import { login } from '@/services/authService'
@@ -11,6 +12,7 @@ function LoginPage() {
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const navigate = useNavigate()
+  const { loadCurrentUser } = useAuth()
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -20,6 +22,7 @@ function LoginPage() {
     try {
       const tokens = await login({ username, password })
       saveTokens(tokens)
+      await loadCurrentUser()
       navigate('/', { replace: true })
     } catch {
       setError('No se pudo iniciar sesion. Verifica tus credenciales.')

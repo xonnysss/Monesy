@@ -10,8 +10,24 @@ export interface AuthTokens {
   refresh: string
 }
 
+export interface UserRole {
+  id: number
+  nombre: string
+}
+
+export interface AuthenticatedUser {
+  id: number
+  django_user_id: number
+  username: string
+  first_name: string
+  last_name: string
+  is_active: boolean
+  created_at: string
+  roles: UserRole[]
+}
+
 interface RefreshResponse {
-    access: string
+  access: string
 }
 
 export async function login(
@@ -36,4 +52,10 @@ export async function refreshAccessToken(
   )
 
   return response.data.access
+}
+
+export async function getCurrentUser(): Promise<AuthenticatedUser> {
+  const response = await api.get<AuthenticatedUser>('auth/me/')
+
+  return response.data
 }
