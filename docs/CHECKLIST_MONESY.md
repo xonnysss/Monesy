@@ -66,13 +66,13 @@
 
 ## Fase 5. Autenticacion e integracion inicial
 
-- [ ] 32. Crear login completo
+- [x] 32. Crear login completo
   - [x] Permitir CORS desde el frontend local
   - [x] Configurar la URL base de Axios mediante variables de entorno
   - [x] Crear el servicio de autenticacion
   - [x] Crear el formulario de login
   - [x] Guardar los tokens JWT en sessionStorage
-  - [ ] Renovar automaticamente el access token
+  - [x] Renovar automaticamente el access token
   - [x] Enviar el access token automaticamente con Axios
   - [x] Crear un endpoint para consultar el usuario autenticado y sus roles
   - [x] Proteger las rutas privadas
