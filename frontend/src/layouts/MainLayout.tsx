@@ -1,5 +1,13 @@
 import { NavLink, Outlet } from 'react-router'
-import { BarChart3, Boxes, ShoppingCart, Store } from 'lucide-react'
+import {
+  BarChart3,
+  Boxes,
+  LogOut,
+  ShoppingCart,
+  Store,
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hooks/useAuth'
 
 const menuItems = [
   {
@@ -20,6 +28,12 @@ const menuItems = [
 ]
 
 function MainLayout() {
+  const { user, logout } = useAuth()
+
+  const roleNames = user?.roles
+    .map((role) => role.nombre)
+    .join(', ')
+
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
       <aside className="fixed left-0 top-0 h-screen w-64 border-r bg-white">
@@ -59,7 +73,26 @@ function MainLayout() {
             <h1 className="text-lg font-semibold">Panel principal</h1>
           </div>
 
-          <div className="text-sm text-slate-600">Usuario administrador</div>
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-sm font-medium">
+                {user?.username}
+              </p>
+              <p className="text-xs text-slate-500">
+                {roleNames || 'Sin rol'}
+              </p>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={logout}
+            >
+              <LogOut className="h-4 w-4" />
+              Cerrar sesion
+            </Button>
+          </div>
         </header>
 
         <main className="p-6">

@@ -75,8 +75,8 @@
   - [ ] Renovar automaticamente el access token
   - [x] Enviar el access token automaticamente con Axios
   - [x] Crear un endpoint para consultar el usuario autenticado y sus roles
-  - [ ] Proteger las rutas privadas
-  - [ ] Mostrar el usuario real y permitir cerrar sesion
+  - [x] Proteger las rutas privadas
+  - [x] Mostrar el usuario real y permitir cerrar sesion
 
 ## Fase 6. Pantallas y flujos de negocio
 
