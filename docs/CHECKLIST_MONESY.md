@@ -80,7 +80,7 @@
 
 ## Fase 6. Pantallas y flujos de negocio
 
-- [ ] 33. Crear dashboard con datos reales
+- [x] 33. Crear dashboard con datos reales
 - [ ] 34. Crear pantalla de productos
 - [ ] 35. Crear pantalla de proveedores
 - [ ] 36. Crear pantalla de clientes
