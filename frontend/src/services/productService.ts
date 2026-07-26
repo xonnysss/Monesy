@@ -17,6 +17,17 @@ export interface Product {
     created_at: string
 }
 
+export interface ProductPayload {
+    codigo: string
+    nombre: string
+    categoria: number
+    unidad_medida: number
+    precio_venta: string
+    precio_compra_ref: string
+    stock_minimo: number
+    activo: boolean
+}
+
 export interface Category {
     id: number
     nombre: string
@@ -35,8 +46,42 @@ export async function getProducts(): Promise<Product[]> {
     return response.data
 }
 
+export async function createProduct(
+    payload: ProductPayload,
+): Promise<Product> {
+    const response = await api.post<Product>(
+        'productos/',
+        payload,
+    )
+
+    return response.data
+}
+
+export async function updateProduct(
+    id: number,
+    payload: ProductPayload,
+): Promise<Product> {
+    const response = await api.put<Product>(
+        `productos/${id}/`,
+        payload,
+    )
+
+    return response.data
+}
+
 export async function getCategories(): Promise<Category[]> {
     const response = await api.get<Category[]>('categorias/')
+
+    return response.data
+}
+
+export async function createCategory(
+    nombre: string,
+): Promise<Category> {
+    const response = await api.post<Category>(
+        'categorias/',
+        { nombre },
+    )
 
     return response.data
 }
