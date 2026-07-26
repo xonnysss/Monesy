@@ -6,6 +6,7 @@ import {
   LogOut,
   ShoppingCart,
   Store,
+  Truck,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
@@ -20,6 +21,11 @@ const menuItems = [
     label: 'Productos',
     path: '/productos',
     icon: Boxes,
+  },
+  {
+    label: 'Proveedores',
+    path: '/proveedores',
+    icon: Truck,
   },
   {
     label: 'Ventas',

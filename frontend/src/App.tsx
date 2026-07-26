@@ -4,6 +4,7 @@ import MainLayout from '@/layouts/MainLayout'
 import DashboardPage from '@/pages/DashboardPage'
 import ProductsPage from '@/pages/ProductsPage'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import ProvidersPage from '@/pages/ProvidersPage'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/productos" element={<ProductsPage />} />
+            <Route path="/proveedores" element={<ProvidersPage />} />
           </Route>
         </Route>
       </Routes>
