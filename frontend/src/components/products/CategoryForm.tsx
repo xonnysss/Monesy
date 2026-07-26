@@ -55,7 +55,7 @@ function CategoryForm() {
                     placeholder="Ejemplo: Bebidas"
                     maxLength={120}
                     disabled={categoryMutation.isPending}
-                    className="h-10 w-full border bg-white px-3 text-sm outline-none focus:border-blue-600 disabled:bg-slate-100"
+                    className="h-10 w-full border bg-background px-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-blue-600 disabled:bg-muted"
                 />
             </div>
 
@@ -68,7 +68,7 @@ function CategoryForm() {
             </Button>
 
             {categoryMutation.isError && (
-                <p className="w-full text-sm text-red-600">
+                <p className="w-full text-sm text-destructive">
                     No se pudo crear la categoria.
                 </p>
             )}

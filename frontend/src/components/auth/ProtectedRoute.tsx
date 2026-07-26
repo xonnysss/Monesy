@@ -8,7 +8,7 @@ export function ProtectedRoute() {
   if (isLoading) {
     return (
       <main className="flex min-h-screen items-center justify-center">
-        <p className="text-sm text-slate-600">Cargando sesion...</p>
+        <p className="text-sm text-muted-foreground">Cargando sesion...</p>
       </main>
     )
   }

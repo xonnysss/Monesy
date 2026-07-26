@@ -21,20 +21,20 @@ function DashboardPage() {
     return (
         <section>
             <h2 className="text-2xl font-bold">Dashboard</h2>
-            <p className="mt-2 text-slate-600">
+            <p className="mt-2 text-muted-foreground">
                 Resumen general del minimarket: ventas, compras, stock y caja.
             </p>
             {isPending && <p className="mt-4">Cargando resumen...</p>}
 
             {data && (
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-muted-foreground">
                     Fecha del resumen: {data.fecha}
                 </p>
             )}
 
             {isError && (
-                <div className="mt-6 flex items-center justify-between gap-4 border border-red-200 bg-red-50 p-4">
-                    <p className="text-sm text-red-700">
+                <div className="mt-6 flex items-center justify-between gap-4 border border-destructive/30 bg-destructive/10 p-4">
+                    <p className="text-sm text-destructive">
                         No se pudo cargar el resumen.
                     </p>
 
@@ -52,13 +52,13 @@ function DashboardPage() {
 
             {data && (
                 <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <article className="rounded-lg border bg-white p-4 shadow-sm">
+                    <article className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
                         <div className="flex items-center justify-between">
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-muted-foreground">
                                 Productos activos
                             </p>
 
-                            <PackageCheck className="h-5 w-5 text-blue-600" />
+                            <PackageCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                         </div>
 
                         <p className="mt-2 text-2xl font-semibold">
@@ -66,13 +66,13 @@ function DashboardPage() {
                         </p>
                     </article>
 
-                    <article className="rounded-lg border bg-white p-4 shadow-sm">
+                    <article className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
                         <div className="flex items-center justify-between">
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-muted-foreground">
                                 Clientes
                             </p>
 
-                            <Users className="h-5 w-5 text-cyan-700" />
+                            <Users className="h-5 w-5 text-cyan-700 dark:text-cyan-400" />
                         </div>
 
                         <p className="mt-2 text-2xl font-semibold">
@@ -80,13 +80,13 @@ function DashboardPage() {
                         </p>
                     </article>
 
-                    <article className="rounded-lg border bg-white p-4 shadow-sm">
+                    <article className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
                         <div className="flex items-center justify-between">
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-muted-foreground">
                                 Stock bajo
                             </p>
 
-                            <AlertTriangle className="h-5 w-5 text-amber-600" />
+                            <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                         </div>
 
                         <p className="mt-2 text-2xl font-semibold">
@@ -94,13 +94,13 @@ function DashboardPage() {
                         </p>
                     </article>
 
-                    <article className="rounded-lg border bg-white p-4 shadow-sm">
+                    <article className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
                         <div className="flex items-center justify-between">
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-muted-foreground">
                                 Ventas de hoy
                             </p>
 
-                            <ShoppingCart className="h-5 w-5 text-emerald-600" />
+                            <ShoppingCart className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                         </div>
 
                         <p className="mt-2 text-2xl font-semibold">
@@ -108,13 +108,13 @@ function DashboardPage() {
                         </p>
                     </article>
 
-                    <article className="rounded-lg border bg-white p-4 shadow-sm">
+                    <article className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
                         <div className="flex items-center justify-between">
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-muted-foreground">
                                 Total vendido hoy
                             </p>
 
-                            <Banknote className="h-5 w-5 text-green-700" />
+                            <Banknote className="h-5 w-5 text-green-700 dark:text-green-400" />
                         </div>
 
                         <p className="mt-2 text-2xl font-semibold">
@@ -122,13 +122,13 @@ function DashboardPage() {
                         </p>
                     </article>
 
-                    <article className="rounded-lg border bg-white p-4 shadow-sm">
+                    <article className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
                         <div className="flex items-center justify-between">
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-muted-foreground">
                                 Compras de hoy
                             </p>
 
-                            <ShoppingBasket className="h-5 w-5 text-violet-600" />
+                            <ShoppingBasket className="h-5 w-5 text-violet-600 dark:text-violet-400" />
                         </div>
 
                         <p className="mt-2 text-2xl font-semibold">
@@ -136,13 +136,13 @@ function DashboardPage() {
                         </p>
                     </article>
 
-                    <article className="rounded-lg border bg-white p-4 shadow-sm">
+                    <article className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
                         <div className="flex items-center justify-between">
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-muted-foreground">
                                 Total comprado hoy
                             </p>
 
-                            <WalletCards className="h-5 w-5 text-rose-600" />
+                            <WalletCards className="h-5 w-5 text-rose-600 dark:text-rose-400" />
                         </div>
 
                         <p className="mt-2 text-2xl font-semibold">
@@ -150,13 +150,13 @@ function DashboardPage() {
                         </p>
                     </article>
 
-                    <article className="rounded-lg border bg-white p-4 shadow-sm">
+                    <article className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
                         <div className="flex items-center justify-between">
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-muted-foreground">
                                 Turnos abiertos
                             </p>
 
-                            <Clock3 className="h-5 w-5 text-orange-600" />
+                            <Clock3 className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                         </div>
 
                         <p className="mt-2 text-2xl font-semibold">

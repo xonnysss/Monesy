@@ -82,6 +82,7 @@
 
 - [x] 33. Crear dashboard con datos reales
 - [x] 34. Crear pantalla de productos
+- [x] 34.5. Agregar modo claro y oscuro
 - [ ] 35. Crear pantalla de proveedores
 - [ ] 36. Crear pantalla de clientes
 - [ ] 37. Completar flujo y pantalla de compras

@@ -74,7 +74,7 @@ function ProductForm({
     return (
         <form
             onSubmit={handleSubmit}
-            className="mt-6 rounded-lg border bg-white p-4"
+            className="mt-6 rounded-lg border bg-card p-4 text-card-foreground"
         >
             <h3 className="text-base font-semibold">
                 {product ? 'Editar producto' : 'Nuevo producto'}
@@ -91,7 +91,7 @@ function ProductForm({
                         required
                         maxLength={50}
                         placeholder="Ejemplo: BEB-001"
-                        className="mt-1 h-10 w-full border px-3 font-normal outline-none focus:border-blue-600"
+                        className="mt-1 h-10 w-full border bg-background px-3 font-normal text-foreground outline-none placeholder:text-muted-foreground focus:border-blue-600"
                     />
                 </label>
 
@@ -105,7 +105,7 @@ function ProductForm({
                         required
                         maxLength={180}
                         placeholder="Ejemplo: Agua mineral"
-                        className="mt-1 h-10 w-full border px-3 font-normal outline-none focus:border-blue-600"
+                        className="mt-1 h-10 w-full border bg-background px-3 font-normal text-foreground outline-none placeholder:text-muted-foreground focus:border-blue-600"
                     />
                 </label>
 
@@ -120,7 +120,7 @@ function ProductForm({
                         }
 
                         disabled={categories.length === 0}
-                        className="mt-1 h-10 w-full border bg-white px-3 font-normal outline-none focus:border-blue-600 disabled:bg-slate-100"
+                        className="mt-1 h-10 w-full border bg-background px-3 font-normal text-foreground outline-none focus:border-blue-600 disabled:bg-muted"
                     >
                         <option value="" disabled>
                             Selecciona una categoria
@@ -148,7 +148,7 @@ function ProductForm({
                         }
 
                         disabled={units.length === 0}
-                        className="mt-1 h-10 w-full border bg-white px-3 font-normal outline-none focus:border-blue-600 disabled:bg-slate-100"
+                        className="mt-1 h-10 w-full border bg-background px-3 font-normal text-foreground outline-none focus:border-blue-600 disabled:bg-muted"
                     >
                         <option value="" disabled>
                             Selecciona una unidad
@@ -176,7 +176,7 @@ function ProductForm({
                         min="0"
                         step="0.01"
                         placeholder="0.00"
-                        className="mt-1 h-10 w-full border px-3 font-normal outline-none focus:border-blue-600"
+                        className="mt-1 h-10 w-full border bg-background px-3 font-normal text-foreground outline-none placeholder:text-muted-foreground focus:border-blue-600"
                     />
                 </label>
 
@@ -192,7 +192,7 @@ function ProductForm({
                         defaultValue={
                             product?.precio_compra_ref ?? '0.00'
                         }
-                        className="mt-1 h-10 w-full border px-3 font-normal outline-none focus:border-blue-600"
+                        className="mt-1 h-10 w-full border bg-background px-3 font-normal text-foreground outline-none focus:border-blue-600"
                     />
                 </label>
 
@@ -205,9 +205,8 @@ function ProductForm({
                         required
                         min="0"
                         step="1"
-                        defaultValue={
-                            product?.stock_minimo ?? 0}
-                        className="mt-1 h-10 w-full border px-3 font-normal outline-none focus:border-blue-600"
+                        defaultValue={product?.stock_minimo ?? 0}
+                        className="mt-1 h-10 w-full border bg-background px-3 font-normal text-foreground outline-none focus:border-blue-600"
                     />
                 </label>
 
@@ -216,7 +215,7 @@ function ProductForm({
                         name="activo"
                         type="checkbox"
                         defaultChecked={product?.activo ?? true}
-                        className="h-4 w-4"
+                        className="h-4 w-4 accent-blue-600"
                     />
                     Producto activo
                 </label>
@@ -251,7 +250,7 @@ function ProductForm({
             </div>
 
             {productMutation.isError && (
-                <p className="mt-3 text-sm text-red-600">
+                <p className="mt-3 text-sm text-destructive">
                     No se puede guardar el producto
                 </p>
             )}

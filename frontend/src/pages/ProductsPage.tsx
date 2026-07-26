@@ -47,23 +47,23 @@ function ProductsPage() {
     return (
         <section>
             <h2 className="text-2xl font-bold">Productos</h2>
-            <p className="mt-2 text-slate-600">
+            <p className="mt-2 text-muted-foreground">
                 Aqui se administraran los productos, precios, categorias y stock.
             </p>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-muted-foreground">
                 Categorias disponibles:{' '}
                 {areCategoriesPending ? 'Cargando...' : categories.length}
             </p>
 
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-muted-foreground">
                 Unidades disponibles:{' '}
                 {areUnitsPending ? 'Cargando...' : units.length}
             </p>
 
             <CategoryForm />
             {selectedProduct && (
-                <p className="mt-4 text-sm text-blue-700">
+                <p className="mt-4 text-sm text-blue-700 dark:text-blue-300">
                     Producto seleccionado: {selectedProduct.nombre}
                 </p>
             )}
@@ -80,7 +80,7 @@ function ProductsPage() {
             )}
 
             {isError && (
-                <p className="mt-6 text-red-600">
+                <p className="mt-6 text-destructive">
                     No se pudieron cargar los productos.
                 </p>
             )}
@@ -92,9 +92,9 @@ function ProductsPage() {
             )}
 
             {products.length > 0 && (
-                <div className="mt-6 overflow-x-auto border bg-white">
+                <div className="mt-6 overflow-x-auto border bg-card text-card-foreground">
                     <table className="w-full text-left text-sm">
-                        <thead className="border-b bg-slate-50 text-slate-600">
+                        <thead className="border-b bg-muted/60 text-muted-foreground">
                             <tr>
                                 <th className="px-4 py-3 font-medium">Codigo</th>
                                 <th className="px-4 py-3 font-medium">Producto</th>
@@ -109,7 +109,7 @@ function ProductsPage() {
 
                         <tbody className="divide-y">
                             {products.map((product) =>
-                                <tr key={product.id} className="hover:bg-slate-50">
+                                <tr key={product.id} className="hover:bg-muted/50">
                                     <td className="px-4 py-3 font-mono text-xs">
                                         {product.codigo}
                                     </td>
@@ -118,7 +118,7 @@ function ProductsPage() {
                                         {product.nombre}
                                     </td>
 
-                                    <td className="px-4 py-3 text-slate-600">
+                                    <td className="px-4 py-3 text-muted-foreground">
                                         {product.categoria_nombre}
                                     </td>
 
@@ -136,7 +136,15 @@ function ProductsPage() {
                                     </td>
 
                                     <td className="px-4 py-3">
-                                        {product.activo ? 'Activo' : 'Inactivo'}
+                                        <span
+                                            className={
+                                                product.activo
+                                                    ? 'text-emerald-700 dark:text-emerald-400'
+                                                    : 'text-muted-foreground'
+                                            }
+                                        >
+                                            {product.activo ? 'Activo' : 'Inactivo'}
+                                        </span>
                                     </td>
 
                                     <td className="px-4 py-3 text-right">
