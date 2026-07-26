@@ -61,7 +61,7 @@ function ProductForm({
                 values.get('precio_compra_ref'),
             ),
             stock_minimo: Number(values.get('stock_minimo')),
-            activo: product?.activo ?? true,
+            activo: values.has('activo'),
         }
 
         productMutation.mutate(payload, {
@@ -210,7 +210,18 @@ function ProductForm({
                         className="mt-1 h-10 w-full border px-3 font-normal outline-none focus:border-blue-600"
                     />
                 </label>
+
+                <label className="flex items-center gap-2 text-sm font-medium">
+                    <input
+                        name="activo"
+                        type="checkbox"
+                        defaultChecked={product?.activo ?? true}
+                        className="h-4 w-4"
+                    />
+                    Producto activo
+                </label>
             </div>
+
             <div className="mt-4 flex justify-end gap-2">
                 {product && (
                     <Button
@@ -218,7 +229,7 @@ function ProductForm({
                         variant="outline"
                         onClick={onFinish}
                     >
-                        <X className="h-4 w-4"/>
+                        <X className="h-4 w-4" />
                         Cancelar
                     </Button>
                 )}
