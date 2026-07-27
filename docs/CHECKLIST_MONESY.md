@@ -84,7 +84,7 @@
 - [x] 34. Crear pantalla de productos
 - [x] 34.5. Agregar modo claro y oscuro
 - [x] 35. Crear pantalla de proveedores
-- [ ] 36. Crear pantalla de clientes
+- [x] 36. Crear pantalla de clientes
 - [ ] 37. Completar flujo y pantalla de compras
   - [ ] Crear compra, detalles y entradas de stock en una transaccion atomica
   - [ ] Calcular y validar subtotales y total en el backend

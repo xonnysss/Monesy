@@ -5,6 +5,7 @@ import DashboardPage from '@/pages/DashboardPage'
 import ProductsPage from '@/pages/ProductsPage'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import ProvidersPage from '@/pages/ProvidersPage'
+import CustomersPage from '@/pages/CustomersPage'
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/productos" element={<ProductsPage />} />
             <Route path="/proveedores" element={<ProvidersPage />} />
+            <Route path="/clientes" element={<CustomersPage />} />
           </Route>
         </Route>
       </Routes>
