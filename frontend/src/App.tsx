@@ -6,6 +6,7 @@ import ProductsPage from '@/pages/ProductsPage'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import ProvidersPage from '@/pages/ProvidersPage'
 import CustomersPage from '@/pages/CustomersPage'
+import PurchasesPage from '@/pages/PurchasesPage'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/productos" element={<ProductsPage />} />
             <Route path="/proveedores" element={<ProvidersPage />} />
+            <Route path="/compras" element={<PurchasesPage />} />
             <Route path="/clientes" element={<CustomersPage />} />
           </Route>
         </Route>

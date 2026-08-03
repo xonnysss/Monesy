@@ -61,6 +61,8 @@ def registrar_movimiento_stock(
     else:
         raise ValidationError('Tipo de movimiento de stock no valido.')
 
+    producto_actual.stock_actual = stock_calculado
+    producto_actual.save(update_fields=['stock_actual'])
 
     return MovimientoStock.objects.create(
         producto=producto_actual,

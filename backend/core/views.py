@@ -166,8 +166,19 @@ class ClienteViewSet(viewsets.ModelViewSet):
     serializer_class = ClienteSerializer
 
 
-class CompraViewSet(viewsets.ModelViewSet):
-    queryset = Compra.objects.select_related('proveedor', 'usuario').all().order_by('id')
+class CompraViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = (
+        Compra.objects
+        .select_related('proveedor', 'usuario')
+        .prefetch_related('detalles__producto')
+        .all()
+        .order_by('-id')
+    )
     serializer_class = CompraSerializer
 
 
@@ -186,7 +197,7 @@ class DetalleDevolucionViewSet(viewsets.ModelViewSet):
     serializer_class = DetalleDevolucionSerializer
 
 
-class DetalleCompraViewSet(viewsets.ModelViewSet):
+class DetalleCompraViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = DetalleCompra.objects.select_related('compra', 'producto',).all().order_by('id')
     serializer_class = DetalleCompraSerializer
 

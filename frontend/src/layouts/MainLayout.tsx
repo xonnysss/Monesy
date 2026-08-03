@@ -4,6 +4,7 @@ import {
   BarChart3,
   Boxes,
   LogOut,
+  ShoppingBag,
   ShoppingCart,
   Store,
   Truck,
@@ -27,6 +28,11 @@ const menuItems = [
     label: 'Proveedores',
     path: '/proveedores',
     icon: Truck,
+  },
+  {
+    label: 'Compras',
+    path: '/compras',
+    icon: ShoppingBag,
   },
   {
     label: 'Clientes',

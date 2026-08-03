@@ -1,5 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
+from decimal import Decimal
 
 from .models import (
     AppUser,
@@ -265,10 +266,30 @@ class DetalleCompraSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
+class DetalleCompraCrearSerializer(serializers.Serializer):
+    producto = serializers.PrimaryKeyRelatedField(
+        queryset=Producto.objects.filter(activo=True),
+    )
+    cantidad = serializers.IntegerField(min_value=1)
+    precio_unitario = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        min_value=Decimal('0.01'),
+    )
+
+
 class CompraSerializer(serializers.ModelSerializer):
+    proveedor = serializers.PrimaryKeyRelatedField(
+        queryset=Proveedor.objects.filter(activo=True),
+    )
     proveedor_nombre = serializers.CharField(source='proveedor.nombre', read_only=True)
     usuario_username = serializers.CharField(source='usuario.username', read_only=True)
-    detalles = DetalleCompraSerializer(many=True, read_only=True)
+    detalles = DetalleCompraCrearSerializer(many=True, write_only=True)
+    detalles_registrados = DetalleCompraSerializer(
+        source='detalles',
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Compra
@@ -281,8 +302,67 @@ class CompraSerializer(serializers.ModelSerializer):
             'fecha',
             'total',
             'detalles',
+            'detalles_registrados',
         ]
-        read_only_fields = ['id', 'fecha', 'detalles']
+        read_only_fields = ['id', 'usuario', 'fecha', 'total', 'detalles_registrados']
+
+    def validate_detalles(self, detalles):
+        if not detalles:
+            raise serializers.ValidationError(
+                'La compra debe tener al menos un producto.'
+            )
+
+        productos = [detalle['producto'].id for detalle in detalles]
+
+        if len(productos) != len(set(productos)):
+            raise serializers.ValidationError(
+                'No se puede repetir un producto en la misma compra.'
+            )
+
+        return detalles
+
+    @transaction.atomic
+    def create(self, validated_data):
+        detalles = validated_data.pop('detalles')
+        usuario = obtener_usuario_monesy(self.context)
+        total = Decimal('0.00')
+
+        compra = Compra.objects.create(
+            usuario=usuario,
+            total=total,
+            **validated_data,
+        )
+
+        for detalle in detalles:
+            producto = detalle['producto']
+            cantidad = detalle['cantidad']
+            precio_unitario = detalle['precio_unitario']
+            subtotal = cantidad * precio_unitario
+
+            DetalleCompra.objects.create(
+                compra=compra,
+                producto=producto,
+                cantidad=cantidad,
+                precio_unitario=precio_unitario,
+                subtotal=subtotal,
+            )
+
+            registrar_movimiento_stock(
+                producto=producto,
+                usuario=usuario,
+                tipo=MovimientoStock.COMPRA,
+                cantidad=cantidad,
+                referencia_tipo=MovimientoStock.COMPRA,
+                referencia_id=compra.id,
+                observacion=f'Compra #{compra.id}',
+            )
+
+            total += subtotal
+
+        compra.total = total
+        compra.save(update_fields=['total'])
+
+        return compra
 
 
 class DetalleVentaSerializer(serializers.ModelSerializer):
