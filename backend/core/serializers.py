@@ -383,10 +383,50 @@ class DetalleVentaSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
+class DetalleVentaCrearSerializer(serializers.Serializer):
+    producto = serializers.PrimaryKeyRelatedField(
+        queryset=Producto.objects.filter(activo=True),
+    )
+    cantidad = serializers.IntegerField(min_value=1)
+    descuento_unitario = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        min_value=Decimal('0.00'),
+        required=False,
+        default=Decimal('0.00'),
+    )
+
+
 class VentaSerializer(serializers.ModelSerializer):
-    cliente_nombre = serializers.CharField(source='cliente.nombre', read_only=True)
-    cajero_username = serializers.CharField(source='cajero.username', read_only=True)
-    detalles = DetalleVentaSerializer(many=True, read_only=True)
+    cliente = serializers.PrimaryKeyRelatedField(
+        queryset=Cliente.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+    cliente_nombre = serializers.CharField(
+        source='cliente.nombre',
+        read_only=True,
+    )
+    cajero_username = serializers.CharField(
+        source='cajero.username',
+        read_only=True,
+    )
+    monto_recibido = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        min_value=Decimal('0.00'),
+        required=False,
+        default=Decimal('0.00'),
+    )
+    detalles = DetalleVentaCrearSerializer(
+        many=True,
+        write_only=True,
+    )
+    detalles_registrados = DetalleVentaSerializer(
+        source='detalles',
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Venta
@@ -403,8 +443,119 @@ class VentaSerializer(serializers.ModelSerializer):
             'monto_recibido',
             'cambio',
             'detalles',
+            'detalles_registrados',
         ]
-        read_only_fields = ['id', 'fecha', 'detalles']
+        read_only_fields = [
+            'id',
+            'cajero',
+            'turno',
+            'fecha',
+            'total',
+            'cambio',
+            'detalles_registrados',
+        ]
+
+    def validate_detalles(self, detalles):
+        if not detalles:
+            raise serializers.ValidationError(
+                'La venta debe tener al menos un producto.'
+            )
+
+        productos = [detalle['producto'].id for detalle in detalles]
+
+        if len(productos) != len(set(productos)):
+            raise serializers.ValidationError(
+                'No se puede repetir un producto en la misma venta.'
+            )
+
+        return detalles
+
+    @transaction.atomic
+    def create(self, validated_data):
+        detalles = validated_data.pop('detalles')
+        monto_recibido = validated_data.pop('monto_recibido')
+        cajero = obtener_usuario_monesy(self.context)
+
+        turno = (
+            TurnoCaja.objects
+            .filter(
+                usuario=cajero,
+                fecha_cierre__isnull=True,
+            )
+            .order_by('-fecha_apertura')
+            .first()
+        )
+
+        if turno is None:
+            raise serializers.ValidationError(
+                'No hay un turno de caja abierto para registrar la venta.'
+            )
+
+        total = Decimal('0.00')
+        lineas = []
+
+        for detalle in detalles:
+            producto = detalle['producto']
+            cantidad = detalle['cantidad']
+            descuento_unitario = detalle['descuento_unitario']
+            precio_unitario = producto.precio_venta
+
+            if descuento_unitario > precio_unitario:
+                raise serializers.ValidationError(
+                    'El descuento no puede ser mayor al precio de venta.'
+                )
+
+            subtotal = (
+                precio_unitario - descuento_unitario
+            ) * cantidad
+
+            lineas.append({
+                'producto': producto,
+                'cantidad': cantidad,
+                'precio_unitario': precio_unitario,
+                'descuento_unitario': descuento_unitario,
+                'subtotal': subtotal,
+            })
+
+            total += subtotal
+
+        if validated_data['metodo_pago'] == Venta.EFECTIVO:
+            if monto_recibido < total:
+                raise serializers.ValidationError(
+                    'El monto recibido no alcanza para cubrir el total.'
+                )
+
+            cambio = monto_recibido - total
+        else:
+            monto_recibido = total
+            cambio = Decimal('0.00')
+
+        venta = Venta.objects.create(
+            cajero=cajero,
+            turno=turno,
+            total=total,
+            monto_recibido=monto_recibido,
+            cambio=cambio,
+            **validated_data,
+        )
+
+        for linea in lineas:
+            DetalleVenta.objects.create(
+                venta=venta,
+                **linea,
+            )
+
+            registrar_movimiento_stock(
+                producto=linea['producto'],
+                usuario=cajero,
+                tipo=MovimientoStock.VENTA,
+                cantidad=linea['cantidad'],
+                referencia_tipo=MovimientoStock.VENTA,
+                referencia_id=venta.id,
+                observacion=f'Venta #{venta.id}',
+            )
+
+        return venta
 
 
 class DetalleDevolucionSerializer(serializers.ModelSerializer):
