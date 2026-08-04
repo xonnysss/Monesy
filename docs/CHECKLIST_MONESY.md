@@ -85,11 +85,11 @@
 - [x] 34.5. Agregar modo claro y oscuro
 - [x] 35. Crear pantalla de proveedores
 - [x] 36. Crear pantalla de clientes
-- [ ] 37. Completar flujo y pantalla de compras
-  - [ ] Crear compra, detalles y entradas de stock en una transaccion atomica
-  - [ ] Calcular y validar subtotales y total en el backend
-  - [ ] Obtener el usuario desde el JWT
-  - [ ] Construir la pantalla de compras
+- [x] 37. Completar flujo y pantalla de compras
+  - [x] Crear compra, detalles y entradas de stock en una transaccion atomica
+  - [x] Calcular y validar subtotales y total en el backend
+  - [x] Obtener el usuario desde el JWT
+  - [x] Construir la pantalla de compras
 - [ ] 38. Completar flujo y pantalla de ventas
   - [ ] Crear venta, detalles y salidas de stock en una transaccion atomica
   - [ ] Calcular total, monto recibido y cambio en el backend
