@@ -90,11 +90,11 @@
   - [x] Calcular y validar subtotales y total en el backend
   - [x] Obtener el usuario desde el JWT
   - [x] Construir la pantalla de compras
-- [ ] 38. Completar flujo y pantalla de ventas
-  - [ ] Crear venta, detalles y salidas de stock en una transaccion atomica
-  - [ ] Calcular total, monto recibido y cambio en el backend
-  - [ ] Obtener el cajero desde el JWT y validar el turno
-  - [ ] Construir la pantalla de ventas
+- [x] 38. Completar flujo y pantalla de ventas
+  - [x] Crear venta, detalles y salidas de stock en una transaccion atomica
+  - [x] Calcular total, monto recibido y cambio en el backend
+  - [x] Obtener el cajero desde el JWT y validar el turno
+  - [x] Construir la pantalla de ventas
 - [ ] 39. Crear pantalla de stock e inventario
 - [ ] 40. Completar flujo y pantalla de caja
   - [ ] Implementar acciones controladas de apertura y cierre
