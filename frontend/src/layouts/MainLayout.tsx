@@ -164,7 +164,7 @@ function MainLayout() {
             <Button
               type="button"
               variant="outline"
-              size="icon-sm"
+              size="sm"
               onClick={logout}
               aria-label="Cerrar sesion"
               title="Cerrar sesion"
