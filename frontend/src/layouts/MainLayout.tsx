@@ -12,9 +12,12 @@ import {
   Store,
   Truck,
   Users,
+  Menu,
+  X,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
+import { useState } from 'react'
 
 const menuItems = [
   {
@@ -72,19 +75,33 @@ const menuItems = [
 function MainLayout() {
   const { user, logout } = useAuth()
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
   const roleNames = user?.roles
     .map((role) => role.nombre)
     .join(', ')
 
   return (
     <div className="min-h-screen bg-muted/40 text-foreground">
-      <aside className="fixed left-0 top-0 h-screen w-64 border-r bg-card">
+      {isMenuOpen && (
+        <button
+          type="button"
+          aria-label="Cerrar menu"
+          className="fixed inset-0 z-30 bg-black/40 lg:hidden"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r bg-card transition-transform duration-200 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0`}
+      >
         <div className="flex h-16 items-center gap-2 border-b px-6">
           <Store className="h-6 w-6 text-blue-700 dark:text-blue-400" />
           <span className="text-lg font-bold text-blue-700 dark:text-blue-400">Monesy</span>
         </div>
 
-        <nav className="space-y-1 p-4">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-4">
           {menuItems.map((item) => {
             const Icon = item.icon
 
@@ -92,11 +109,11 @@ function MainLayout() {
               <NavLink
                 key={item.path}
                 to={item.path}
+                onClick={() => setIsMenuOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium ${
-                    isActive
-                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium ${isActive
+                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   }`
                 }
               >
@@ -108,16 +125,34 @@ function MainLayout() {
         </nav>
       </aside>
 
-      <div className="pl-64">
-        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-card px-6">
-          <div>
-            <p className="text-sm text-muted-foreground">Sistema de gestion</p>
-            <h1 className="text-lg font-semibold">Panel principal</h1>
+      <div className="lg:pl-64">
+        <header className="sticky top-0 z-10 flex h-16 items-center justify-between gap-2 border-b bg-card px-4 sm:px-6">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            className="shrink-0 lg:hidden"
+            onClick={() => setIsMenuOpen((current) => !current)}
+            aria-label={isMenuOpen ? 'Cerrar menu' : 'Abrir menu'}
+            aria-expanded={isMenuOpen}
+            title={isMenuOpen ? 'Cerrar menu' : 'Abrir menu'}
+          >
+            {isMenuOpen ? <X /> : <Menu />}
+          </Button>
+
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm text-muted-foreground">
+              Sistema de gestion
+            </p>
+            <h1 className="truncate text-lg font-semibold">
+              Panel principal
+            </h1>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />
-            <div className="text-right">
+
+            <div className="hidden text-right sm:block">
               <p className="text-sm font-medium">
                 {user?.username}
               </p>
@@ -129,16 +164,18 @@ function MainLayout() {
             <Button
               type="button"
               variant="outline"
-              size="sm"
+              size="icon-sm"
               onClick={logout}
+              aria-label="Cerrar sesion"
+              title="Cerrar sesion"
             >
               <LogOut className="h-4 w-4" />
-              Cerrar sesion
+              <span className="hidden sm:inline">Cerrar sesion</span>
             </Button>
           </div>
         </header>
 
-        <main className="p-6">
+        <main className="p-4 sm:p-6">
           <Outlet />
         </main>
       </div>

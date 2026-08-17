@@ -15,6 +15,8 @@ import {
   getAccessToken,
 } from '@/services/tokenStorage'
 
+import { SESSION_EXPIRED_EVENT } from '@/services/authInterceptor'
+
 interface AuthProviderProps {
   children: ReactNode
 }
@@ -48,6 +50,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = useCallback(() => {
     clearTokens()
     setUser(null)
+  }, [])
+
+  useEffect(() => {
+    function handleSessionExpired() {
+      setUser(null)
+      setIsLoading(false)
+    }
+
+    window.addEventListener(
+      SESSION_EXPIRED_EVENT,
+      handleSessionExpired,
+    )
+
+    return () => {
+      window.removeEventListener(
+        SESSION_EXPIRED_EVENT,
+        handleSessionExpired,
+      )
+    }
   }, [])
 
   useEffect(() => {

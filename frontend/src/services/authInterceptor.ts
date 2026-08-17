@@ -15,6 +15,13 @@ interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean
 }
 
+export const SESSION_EXPIRED_EVENT = 'monesy:session-expired'
+
+function notifySessionExpired() {
+  clearTokens()
+  window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT))
+}
+
 export function configureAuthInterceptor() {
   api.interceptors.response.use(
     (response) => response,
@@ -37,7 +44,7 @@ export function configureAuthInterceptor() {
       const refreshToken = getRefreshToken()
 
       if (!refreshToken) {
-        clearTokens()
+        notifySessionExpired()
         return Promise.reject(error)
       }
 
@@ -49,7 +56,7 @@ export function configureAuthInterceptor() {
 
         return api(originalRequest)
       } catch (refreshError) {
-        clearTokens()
+        notifySessionExpired()
         return Promise.reject(refreshError)
       }
     },

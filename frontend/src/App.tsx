@@ -12,6 +12,7 @@ import InventoryPage from '@/pages/InventoryPage'
 import CashPage from '@/pages/CashPage'
 import ReturnsPage from '@/pages/ReturnsPage'
 import ReportsPage from '@/pages/ReportsPage'
+import NotFoundPage from '@/pages/NotFoundPage'
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path="/reportes" element={<ReportsPage />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   )
