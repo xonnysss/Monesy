@@ -95,18 +95,18 @@
   - [x] Calcular total, monto recibido y cambio en el backend
   - [x] Obtener el cajero desde el JWT y validar el turno
   - [x] Construir la pantalla de ventas
-- [ ] 39. Crear pantalla de stock e inventario
-- [ ] 40. Completar flujo y pantalla de caja
-  - [ ] Implementar acciones controladas de apertura y cierre
-  - [ ] Calcular el monto final del sistema y la diferencia
-  - [ ] Impedir turnos abiertos duplicados
-  - [ ] Construir la pantalla de caja
-- [ ] 41. Completar flujo y pantalla de devoluciones
-  - [ ] Validar la venta y las cantidades que pueden devolverse
-  - [ ] Crear devolucion, detalles y entradas de stock en una transaccion atomica
-  - [ ] Obtener el usuario desde el JWT
-  - [ ] Construir la pantalla de devoluciones
-- [ ] 42. Crear pantalla y endpoints de reportes
+- [x] 39. Crear pantalla de stock e inventario
+- [x] 40. Completar flujo y pantalla de caja
+  - [x] Implementar acciones controladas de apertura y cierre
+  - [x] Calcular el monto final del sistema y la diferencia
+  - [x] Impedir turnos abiertos duplicados
+  - [x] Construir la pantalla de caja
+- [x] 41. Completar flujo y pantalla de devoluciones
+  - [x] Validar la venta y las cantidades que pueden devolverse
+  - [x] Crear devolucion, detalles y entradas de stock en una transaccion atomica
+  - [x] Obtener el usuario desde el JWT
+  - [x] Construir la pantalla de devoluciones
+- [x] 42. Crear pantalla y endpoints de reportes
 - [ ] 43. Completar la conexion frontend con backend
   - [x] Configurar CORS y cliente Axios base
   - [x] Configurar TanStack Query en la aplicacion

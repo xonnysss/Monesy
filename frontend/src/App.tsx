@@ -7,7 +7,11 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import ProvidersPage from '@/pages/ProvidersPage'
 import CustomersPage from '@/pages/CustomersPage'
 import PurchasesPage from '@/pages/PurchasesPage'
-import SalesPage from './pages/SalesPage'
+import SalesPage from '@/pages/SalesPage'
+import InventoryPage from '@/pages/InventoryPage'
+import CashPage from '@/pages/CashPage'
+import ReturnsPage from '@/pages/ReturnsPage'
+import ReportsPage from '@/pages/ReportsPage'
 
 function App() {
   return (
@@ -23,6 +27,10 @@ function App() {
             <Route path="/compras" element={<PurchasesPage />} />
             <Route path="/clientes" element={<CustomersPage />} />
             <Route path="/ventas" element={<SalesPage />} />
+            <Route path="/inventario" element={<InventoryPage />} />
+            <Route path="/caja" element={<CashPage />} />
+            <Route path="/devoluciones" element={<ReturnsPage />} />
+            <Route path="/reportes" element={<ReportsPage />} />
           </Route>
         </Route>
       </Routes>

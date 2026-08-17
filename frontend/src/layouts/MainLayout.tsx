@@ -1,9 +1,12 @@
 import { NavLink, Outlet } from 'react-router'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import {
+  Archive,
   BarChart3,
+  Banknote,
   Boxes,
   LogOut,
+  RotateCcw,
   ShoppingBag,
   ShoppingCart,
   Store,
@@ -43,6 +46,26 @@ const menuItems = [
     label: 'Ventas',
     path: '/ventas',
     icon: ShoppingCart,
+  },
+  {
+    label: 'Inventario',
+    path: '/inventario',
+    icon: Archive,
+  },
+  {
+    label: 'Caja',
+    path: '/caja',
+    icon: Banknote,
+  },
+  {
+    label: 'Devoluciones',
+    path: '/devoluciones',
+    icon: RotateCcw,
+  },
+  {
+    label: 'Reportes',
+    path: '/reportes',
+    icon: BarChart3,
   },
 ]
 

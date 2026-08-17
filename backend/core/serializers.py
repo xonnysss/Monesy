@@ -1,6 +1,7 @@
-from django.db import transaction
-from rest_framework import serializers
 from decimal import Decimal
+from django.db import transaction
+from django.db.models import Sum
+from rest_framework import serializers
 
 from .models import (
     AppUser,
@@ -244,9 +245,42 @@ class TurnoCajaSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             'id',
+            'usuario',
+            'usuario_username',
             'fecha_apertura',
+            'fecha_cierre',
+            'monto_inicial',
+            'monto_final_real',
+            'monto_final_sistema',
             'diferencia',
+            'observacion',
         ]
+
+
+class AperturaCajaSerializer(serializers.Serializer):
+    monto_inicial = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        min_value=Decimal('0.00'),
+    )
+    observacion = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
+
+
+class CierreCajaSerializer(serializers.Serializer):
+    monto_final_real = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        min_value=Decimal('0.00'),
+    )
+    observacion = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
 
 
 class DetalleCompraSerializer(serializers.ModelSerializer):
@@ -575,10 +609,32 @@ class DetalleDevolucionSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
+class DetalleDevolucionCrearSerializer(serializers.Serializer):
+    producto = serializers.PrimaryKeyRelatedField(
+        queryset=Producto.objects.all(),
+    )
+    cantidad = serializers.IntegerField(min_value=1)
+
+
 class DevolucionSerializer(serializers.ModelSerializer):
+    venta = serializers.PrimaryKeyRelatedField(
+        queryset=Venta.objects.all(),
+    )
     venta_id = serializers.IntegerField(source='venta.id', read_only=True)
+    venta_fecha = serializers.DateTimeField(
+        source='venta.fecha',
+        read_only=True,
+    )
     usuario_username = serializers.CharField(source='usuario.username', read_only=True)
-    detalles = DetalleDevolucionSerializer(many=True, read_only=True)
+    detalles = DetalleDevolucionCrearSerializer(
+        many=True,
+        write_only=True,
+    )
+    detalles_registrados = DetalleDevolucionSerializer(
+        source='detalles',
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Devolucion
@@ -586,14 +642,116 @@ class DevolucionSerializer(serializers.ModelSerializer):
             'id',
             'venta',
             'venta_id',
+            'venta_fecha',
             'usuario',
             'usuario_username',
             'fecha',
             'motivo',
             'total_devuelto',
             'detalles',
+            'detalles_registrados',
         ]
-        read_only_fields = ['id', 'fecha', 'detalles']
+        read_only_fields = [
+            'id',
+            'venta_id',
+            'venta_fecha',
+            'usuario',
+            'usuario_username',
+            'fecha',
+            'total_devuelto',
+            'detalles_registrados',
+        ]
+
+    def validate_detalles(self, detalles):
+        if not detalles:
+            raise serializers.ValidationError(
+                'La devolucion debe tener al menos un producto.'
+            )
+
+        productos = [detalle['producto'].id for detalle in detalles]
+
+        if len(productos) != len(set(productos)):
+            raise serializers.ValidationError(
+                'No se puede repetir un producto en la misma devolucion.'
+            )
+
+        return detalles
+
+    @transaction.atomic
+    def create(self, validated_data):
+        detalles = validated_data.pop('detalles')
+        venta = validated_data['venta']
+        usuario = obtener_usuario_monesy(self.context)
+        lineas = []
+        total_devuelto = Decimal('0.00')
+
+        # Mantiene un orden fijo de bloqueos cuando se devuelven varios productos.
+        for detalle in sorted(detalles, key=lambda item: item['producto'].id):
+            producto = detalle['producto']
+            cantidad = detalle['cantidad']
+
+            detalle_venta = (
+                DetalleVenta.objects
+                .select_for_update()
+                .filter(venta=venta, producto=producto)
+                .first()
+            )
+
+            if detalle_venta is None:
+                raise serializers.ValidationError(
+                    'El producto indicado no pertenece a la venta seleccionada.'
+                )
+
+            cantidad_devuelta = (
+                DetalleDevolucion.objects
+                .filter(devolucion__venta=venta, producto=producto)
+                .aggregate(total=Sum('cantidad'))['total']
+                or 0
+            )
+            cantidad_disponible = (
+                detalle_venta.cantidad - cantidad_devuelta
+            )
+
+            if cantidad > cantidad_disponible:
+                raise serializers.ValidationError(
+                    'La cantidad a devolver supera la cantidad pendiente.'
+                )
+
+            precio_unitario = (
+                detalle_venta.precio_unitario
+                - detalle_venta.descuento_unitario
+            )
+            subtotal = precio_unitario * cantidad
+            lineas.append({
+                'producto': producto,
+                'cantidad': cantidad,
+                'precio_unitario': precio_unitario,
+                'subtotal': subtotal,
+            })
+            total_devuelto += subtotal
+
+        devolucion = Devolucion.objects.create(
+            usuario=usuario,
+            total_devuelto=total_devuelto,
+            **validated_data,
+        )
+
+        for linea in lineas:
+            DetalleDevolucion.objects.create(
+                devolucion=devolucion,
+                **linea,
+            )
+            registrar_movimiento_stock(
+                producto=linea['producto'],
+                usuario=usuario,
+                tipo=MovimientoStock.DEVOLUCION,
+                cantidad=linea['cantidad'],
+                referencia_tipo=MovimientoStock.DEVOLUCION,
+                referencia_id=devolucion.id,
+                observacion=f'Devolucion #{devolucion.id}',
+            )
+
+        return devolucion
 
 
 class AppUserRolSerializer(serializers.ModelSerializer):
