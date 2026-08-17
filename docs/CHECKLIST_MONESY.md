@@ -107,12 +107,12 @@
   - [x] Obtener el usuario desde el JWT
   - [x] Construir la pantalla de devoluciones
 - [x] 42. Crear pantalla y endpoints de reportes
-- [ ] 43. Completar la conexion frontend con backend
+- [x] 43. Completar la conexion frontend con backend
   - [x] Configurar CORS y cliente Axios base
   - [x] Configurar TanStack Query en la aplicacion
-  - [ ] Conectar todas las pantallas con sus APIs
-  - [ ] Manejar carga, errores y estados vacios
-  - [ ] Verificar navegacion y diseno responsivo
+  - [x] Conectar todas las pantallas con sus APIs
+  - [x] Manejar carga, errores y estados vacios
+  - [x] Verificar navegacion y diseno responsivo
 
 ## Fase 7. Roles, pruebas y correcciones
 
